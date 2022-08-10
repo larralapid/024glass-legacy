@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="{{ shop.locale }}" class="no-js" {% if settings.rtl %}dir="rtl"{% endif %}>
+  <head>
+    <meta charset="utf-8">
+    {% capture seo_title %}
+    {{ page_title }}
+    {% unless page_title contains shop.name %}
+    &ndash; {{ shop.name }}
+    {% endunless %}
+    {% endcapture %}
+    <title>{{ seo_title }}</title>
+    {%- if canonical_url != blank  -%}
+    <link rel="canonical" href="{{ canonical_url }}">
+    {%- endif -%}
+    {%- if settings.favicon.size != blank -%}
+    <link rel="shortcut icon" href="{{ settings.favicon | img_url: '32x32' }}" type="image/png">
+    {%- endif -%}
+    {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+    {%- endif -%}
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->
+    <!-- CSS -->
+    {% include 'variables' %}
+    {% render 'prefetch' %}
+    {% comment %}
+    {% if template contains 'index' or template contains 'collection' or template contains 'product' %}
+    <link rel="preload" href="{{ 'theme.css' | asset_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ 'theme.css' | asset_url }}"></noscript>
+    {% else %}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    {% endcomment %}
+    {{ 'theme.css' | asset_url | stylesheet_tag }}
+    {% if settings.rtl %}
+    {{ 'rtl.scss.css' | asset_url | stylesheet_tag }}
+    {% endif %}
+    {%- if request.page_type contains  'collection' -%}
+    {{ 'jquery-ui.min.css' | asset_url | stylesheet_tag }}
+    {%- endif -%}
+    <link rel="stylesheet" href="{{ 'custom-style.css' | asset_url }}" type="text/css">
+    <!-- JS -->
+    <script>
+      var theme = {
+        moneyFormat: {{ shop.money_format | json }},
+        shopCurrency: {{ shop.currency | json }},
+        moneyFormatCurrency: {{ shop.money_with_currency_format | json }}
+      };
+      document.documentElement.className = document.documentElement.className.replace('no-js', 'js');
+    </script>
+    <script src="{{ 'jquery.min.js' | asset_url }}"></script>
+    {%- if request.page_type contains 'customers' -%}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag | remove: ' type="text/javascript"' }}
+    {{ 'customer_area.js'  | shopify_asset_url | script_tag | remove: ' type="text/javascript"' }}
+    {%- endif -%}
+    <!-- SHOPIFY SERVICE SCRIPTS -->
+    {{ content_for_header }}
+    <style>
+      img.slideshow_image {min-width: 100%;}
+    </style>
+  </head>
+  <body class="template-{{ template | split: '.' | first }} {{ settings.color_scheme }} {% if settings.rtl %}rtl{% endif %}">
+    {% include 'agechecker' %}
+    <main class="page_wrapper">
+      {%comment%}<div id="page_preloader__bg">
+      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
+      </div>
+      <script>
+        preloaderBg = document.getElementById('page_preloader__bg');
+        window.addEventListener('load', function() {
+          preloaderBg.classList.add("off");
+        });
+      </script>{%endcomment%}
+      {% if template == 'password' or template == 'page.password' %}
+      {{ content_for_layout }}
+      {% else %}
+      {% section 'helper' %}
+      {% case settings.header_type %}
+      {% when '1' %}
+      {%- capture var_header -%}{% section 'header-1' %}{%- endcapture -%}
+      {% when '2' %}
+      {%- capture var_header -%}{% section 'header-2' %}{%- endcapture -%}
+      {% when '3' %}
+      {%- capture var_header -%}{% section 'header-3' %}{%- endcapture -%}
+      {% when '4' %}
+      {%- capture var_header -%}{% section 'header-4' %}{%- endcapture -%}
+      {% when '5' %}
+      {%- capture var_header -%}{% section 'header-5' %}{%- endcapture -%}
+      {% endcase %}
+      {{ var_header }}
+      <div class="page_container">
+        {% unless template == 'index' or template == 'collection.fullwidth' or template == 'page.about-us' or template == 'page.about-us-creative' or template == 'page.contact' %}
+        <div class="container">
+          {% endunless %}
+          {% unless template == 'index' %}
+          {% include 'snippet-breadcrumbs' %}
+          {% endunless %}
+          {%- assign sidebar_on = false -%}
+          {% case template %}
+          {% when 'search', 'list-collection', 'page.wishlist', 'gift_card', 'page' %}
+          {% if settings.sidebar_toggle %}
+          {%- assign sidebar_on = true -%}
+          {% endif %}
+          {% endcase %}
+          {% case template %}
+          {% when 'search', 'list-collection', 'page.wishlist', 'gift_card', 'page' %}
+          <div class="collection-wrapper"></div>
+          {% endcase %}
+          {% if sidebar_on %}
+          <div class="sidebar-enable row{% if settings.sidebar_position == 'sidebar_right' %} justify-content-md-end{% endif %}">
+            {% endif %}
+            <div class="main_content{% if template == 'collection.fullwidth' %} mt-0{% endif %}{% if sidebar_on %} sidebar_on col-12 col-md-9{% if settings.sidebar_position == 'sidebar_left' %} left-sidebar{% elsif settings.sidebar_position == 'sidebar_right' %} right-sidebar{% endif %}{% endif %}">
+              {{ content_for_layout }}
+            </div>
+            {% if sidebar_on %}
+            <div class="sidebar_small col-12 col-md-3">
+              {% section 'template-sidebar' %}
+            </div>
+            {% endif %}
+            {% if sidebar_on %}
+          </div>
+          {% endif %}
+          {% unless template == 'index' %}
+        </div>
+        {% endunless %}
+      </div>
+      {% case settings.footer_type %}
+      {% when '1' %}
+      {% section 'footer-1' %}
+      {% when '2' %}
+      {% section 'footer-2' %}
+      {% when '3' %}
+      {% section 'footer-3' %}
+      {% when '4' %}
+      {% section 'footer-4' %}
+      {% endcase %}
+      {%comment%}<a id="back_top" href="#">
+      <svg width="16" height="13" viewBox="0 0 8 5" xmlns="http://www.w3.org/2000/svg"><path d="M8 4L7 5L4 2L1 5L0 4L4 0L8 4Z" /></svg>
+      </a>{%endcomment%}
+      {% if settings.newsletter_popup_toggle %}
+      {% include 'widget-newsletter-popup' %}
+      {% endif %}
+      {% endif %}
+    </main>
+    {%- include "header-currency-script" -%}
+    {%- include "include_script_js" -%}
+    {%- if settings.hide_pb_toggle -%}
+    <style>
+      #preview-bar-iframe {
+        display: none!important;
+      }
+      html {
+        padding-bottom:0!important;
+      }
+    </style>
+    {%- endif -%}
+    <script type="text/javascript" data-src="https://app.termly.io/embed.min.js" data-auto-block="on" data-website-uuid="acec660d-1fab-4b98-a51e-bf42e29d0a24" ></script>  
+    <!-- PF EDT START -->
+    <script type='text/javascript'>
+      {%- if content_for_header contains 'shopify-product-customizer' -%}
+      {%- if product -%}
+      {%- if product.first_available_variant -%}
+      var pfProductId = {{ product.metafields.printful.is_synced | json }};
+      var pfEdt = {{ shop.metafields.printful.is_edt_enabled | json }};
+      var pfEdtTextColor = {{ shop.metafields.printful.edt_text_color | json }};
+      var pfEdtBackgroundColor = {{ shop.metafields.printful.edt_background_color | json }};
+      var pfEdtBorderColor = {{ shop.metafields.printful.edt_border_color | json }};  
+      var pfEdtUseDefaultStyling = {{ shop.metafields.printful.edt_default_style | json }};
+      var pfEdtTextAlignment = {{ shop.metafields.printful.edt_text_alignment | json }};
+      var pfEdtFlags = {
+        US: "{{ 'US.svg' | asset_url }}",CA: "{{ 'CA.svg' | asset_url }}",ES: "{{ 'ES.svg' | asset_url }}",LV: "{{ 'LV.svg' | asset_url }}",GB: "{{ 'GB.svg' | asset_url }}",DE: "{{ 'DE.svg' | asset_url }}",FR: "{{ 'FR.svg' | asset_url }}",AU: "{{ 'AU.svg' | asset_url }}",JP: "{{ 'JP.svg' | asset_url }}",NZ: "{{ 'NZ.svg' | asset_url }}",IT: "{{ 'IT.svg' | asset_url }}",BR: "{{ 'BR.svg' | asset_url }}",KR: "{{ 'KR.svg' | asset_url }}",NL: "{{ 'NL.svg' | asset_url }}",
+      };
+      {%- else -%}
+      var pfEdt = 0;
+      {%- endif -%}
+      {%- endif -%}
+      {%- endif -%}
+    </script>
+    <!-- PF EDT END -->
+    {% render 'content_for_footer' %}
+  </body>
+</html>

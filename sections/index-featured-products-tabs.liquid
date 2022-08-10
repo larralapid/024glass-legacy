@@ -1,0 +1,218 @@
+{%- assign productsCount = section.settings.products_limit | plus: 0 -%}
+
+<div class="container layout_boxed">
+  {% if section.blocks.size > 0 %}
+    <div class="tab_content_wrapper">
+      <div class="tab_navigation row justify-content-start align-items-baseline">
+        {% if section.settings.section_title.size > 0 %}
+          <div class="col-lg-3">
+            <h4 class="section_heading">{{ section.settings.section_title | escape }}</h4>
+          </div>
+        
+        {% endif %}
+        {%- assign block_counter = 0 | plus: 0 -%}
+        <p class="col-lg-9">
+          <span class="text-lg-right text-center d-block">
+          {% for block in section.blocks %}
+            {%- assign block_counter = block_counter | plus: 1 -%}
+            {%- assign collection_title = collections[block.settings.block_collection].title -%}
+            <span class="tab_nav tab_nav_{{ block_counter }} {% if block_counter == 1 %}active{% endif %}" data-tab="{{ block_counter | minus: 1 }}">{% if block.settings.block_collection_title.size > 0 %}{{ block.settings.block_collection_title }}{% else %}{{ collection_title }}{% endif %}</span>
+          {% endfor %}
+        </span>
+        </p>
+      
+      </div>
+      
+      <div class="tab_content">
+  
+        {%- assign block_counter = 0 -%}
+        {% for block in section.blocks %}
+          {%- assign block_counter = block_counter | plus: 1 -%}
+          {%- assign collection = collections[block.settings.block_collection] -%}
+          <div class="tab_item fade tab_item_{{ block_counter }} {% if block_counter == 1 %}active{% endif %}">
+            {% if productsCount <= 4 %}
+              <div class="row product_listing__main product_listing__grid product_limit_{{ section.settings.products_limit }}">
+                {% for product in collection.products limit: section.settings.products_limit %}
+                  <div class="col-12 col-sm-6 col-md-3">
+                    {% include 'product-listing-item' img_size: section.settings.img_size, img_min_size: '130x160', img_alignment: section.settings.img_alignment, product: product %}
+                  </div>
+                {% endfor %}
+              </div>
+            {% else %}
+             
+                <div class="products_carousel_tabs swiper-container swiper-nav-wrapper" id="products_carousel_tabs_{{ block_counter }}" data-products="{{ productsCount }}">
+                  <div class="swiper-wrapper product_listing__main mx-0 product_listing__grid product_limit_{{ section.settings.products_limit }}">
+                    {% for product in collection.products limit: section.settings.products_limit %}
+                      <div class="swiper-slide">
+                        <div class="product_item_wrap px-0">
+                           {% include 'product-listing-item' img_size: section.settings.img_size, img_min_size: '130x160', img_alignment: section.settings.img_alignment, product: product %}
+                        </div>
+                      </div>
+                    {% endfor %}
+                  </div>
+                  <div id="pagination_{{ block_counter }}" class="swiper-pagination"></div>
+                  
+                  <div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+                  <div id="next_{{ section.id }}" class="swiper-button-next"></div>
+             
+                </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+"name": "Featured products tabs",
+"class": "section section_homepage section_featured-products-tabs",
+"max_blocks": 4,
+"settings": [
+{
+"type": "text",
+"id": "section_title",
+"label": "Heading",
+"default": "Featured products"
+},
+
+{
+"type": "select",
+"id": "products_limit",
+"label": "Show products",
+"options": [
+{
+"value": "4",
+"label": "4"
+},
+{
+"value": "5",
+"label": "5"
+},
+{
+"value": "6",
+"label": "6"
+},
+{
+"value": "8",
+"label": "8"
+},
+{
+"value": "12",
+"label": "12"
+}
+]
+},
+{
+"type": "select",
+"id": "img_size",
+"label": "Image size",
+"options": [
+{
+"value": "270x340",
+"label": "Medium"
+},
+{
+"value": "370x466",
+"label": "Large"
+}
+],"default": "270x340"
+},
+{
+"type": "select",
+"id": "img_alignment",
+"label": "Image alignment",
+"options": [
+{
+"value": "top",
+"label": "Top"
+},
+{
+"value": "center",
+"label": "Middle"
+},
+{
+"value": "bottom",
+"label": "Bottom"
+}
+]
+}
+],
+"blocks": [
+// collection tab ===================================================================================
+{
+"type": "collection_tab",
+"name": "Collection",
+"settings": [
+{
+"type": "text",
+"id": "block_collection_title",
+"label": "Collection title"
+},
+{
+"type": "collection",
+"id": "block_collection",
+"label": "Collection"
+}
+]
+}
+
+],
+"presets": [
+{
+"name": "Featured products tabs",
+"category": "Products"
+}
+]
+}
+{% endschema %}
+
+{% javascript %}
+
+jQuery(document).ready(function($) {
+$('.products_carousel_tabs').each(function(i) {
+
+var sliderTabId = '#' + $(this).attr('id');
+var sliderTabVar = $(this).attr('id');
+var sliderTabPagination = '#pagination_' + sliderTabVar.replace('products_carousel_tabs_', '');
+
+var carouselTabVar = new Swiper( sliderTabId, {
+effect: 'slide',
+observer: true,
+observeParents: true,
+spaceBetween: 30,
+speed: 500,
+slidesPerView: 'auto',
+loop: true,
+slidesPerGroup: 1,
+navigation: {
+nextEl: $(this).parent().find('.swiper-button-next'),
+prevEl: $(this).parent().find('.swiper-button-prev')
+},
+breakpoints: {
+576: {
+slidesPerView: 2
+},
+768: {
+slidesPerView: 3
+},
+992: {
+slidesPerView: 3
+},
+1200: {
+slidesPerView: 4
+}
+},
+pagination: {
+el: sliderTabPagination,
+type: 'bullets',
+clickable: true
+}
+});
+
+});
+});
+{% endjavascript %}
+
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                

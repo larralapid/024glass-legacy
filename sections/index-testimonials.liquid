@@ -1,0 +1,238 @@
+{% assign star_active = '<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.5142 7.51048H12.7417L10.3409 0L7.93265 7.51048L0.160156 7.50287L6.45468 12.1493L4.0464 19.6522L10.3409 15.0133L16.6279 19.6522L14.2272 12.1493L20.5142 7.51048Z" fill="#FFD953"/></svg>' %}
+{% assign star_notactive = '<svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.5142 7.51048H12.7417L10.3409 0L7.93265 7.51048L0.160156 7.50287L6.45468 12.1493L4.0464 19.6522L10.3409 15.0133L16.6279 19.6522L14.2272 12.1493L20.5142 7.51048Z" fill="#E1E2E4"/></svg>' %}
+
+
+<div style="{%- if section.settings.background_color.size > 0 -%} background-color: {{ section.settings.background_color }};{%- endif -%}" class="testimonials_{{ section.settings.style }}">
+<div class="container" style="position: relative;">
+	<div class="testimonials_caption text-center">
+		{% if section.settings.title.size > 0 %}
+			<h4 class="h3 section_heading">{{ section.settings.title }}</h4>
+		{% endif %}
+		{% if section.settings.header_logo %}
+			<img src="{{ section.settings.header_logo | img_url: '185x45', crop: 'center' }}" alt="{{ section.settings.header_logo.alt }}">
+		{% endif %}
+		{% if section.settings.caption_text.size > 0 %}
+			<p class="testimonials_caption__text text">{{ section.settings.caption_text }}</p>
+		{% endif %}
+	</div>
+	{% unless section.settings.style == 'type_2' %}
+	<div class="testimonials_slider swiper-container" id="testimonials_{{ section.id }}">
+		<div class="swiper-wrapper">
+			{% endunless %}
+			{% unless section.settings.style == 'type_1' %}
+			<div class="row">
+			{% endunless %}
+			{% for block in section.blocks %}
+				{% unless section.settings.style == 'type_2' %}
+				<div class="swiper-slide">
+					{% endunless %}
+					<div class="testimonial_slide__item style_{{ section.settings.style }} {% unless section.settings.style == 'type_1' %} col-12 col-lg-4{% endunless %}">
+						<div class="testimonial_slide__item_wrapper">
+						
+						{% if block.settings.star != 'none' %}
+							<div class="testimonials_item__stars">
+								{% for i in (1..5) %}
+									<span class="star_item">
+										{% assign star_setting = block.settings.star | abs %}
+										{% if i <= star_setting %}
+												{{ star_active }}
+										{% else %}
+												{{ star_notactive }}
+										{% endif %}
+									</span>
+								{% endfor %}
+							</div>
+						{% endif %}
+						<blockquote class="testimonials_item">
+							{% if block.settings.quote.size > 0 %}
+								<p class="testimonials_item__text">{{ block.settings.quote }}</p>
+							{% endif %}
+							
+							{% if block.settings.author_img.size > 0 or block.settings.author.size > 0 %}
+								<div class="testimonial_author d-inline-flex align-items-center">
+									{% if block.settings.author_img.size > 0 %}
+										<div class="testimonial_image__author">
+											<img class="blur-up lazyload"
+												 src="{{ block.settings.author_img | img_url: '70x70', crop: 'center' }}"
+												 alt="{{ block.settings.author_img.alt }}"
+											>
+										</div>
+									{% endif %}
+									{% if block.settings.author.size > 0 %}
+										<div class="ml-2 text-left">
+											<cite class="testimonials_item__author">{{ block.settings.author | escape }}</cite>
+											{% if block.settings.author_info.size > 0 %}
+												<span class="testimonials_item__author">{{ block.settings.author_info | escape }}</span>
+											{% endif %}
+										</div>
+									{% endif %}
+								</div>
+							{% endif %}
+							
+						</blockquote>
+						</div>
+					</div>
+					{% unless section.settings.style == 'type_2' %}
+				</div>
+				{% endunless %}
+			{% endfor %}
+				{% unless section.settings.style == 'type_1' %}
+				</div>
+			{% endunless %}
+			{% unless section.settings.style == 'type_2' %}
+		</div>
+		<div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+	</div>
+	{% endunless %}
+</div>
+</div>
+
+{% schema %}
+{
+	"name": "Testimonials",
+	"class": "section section_homepage index_section_testimonials",
+	"max_blocks": 9,
+	"settings": [
+		{
+			"type": "text",
+			"id": "title",
+			"label": "Heading",
+			"default": "Testimonials"
+		},
+		{
+			"type": "color",
+			"id": "background_color",
+			"label": "Background color"
+		},
+		{
+			"type": "select",
+			"id": "style",
+			"label": "Testimonials Style",
+			"default": "type_1",
+			"options": [
+				{
+					"value": "type_1",
+					"label": "Type #1"
+				},
+				{
+					"value": "type_2",
+					"label": "Type #2"
+				}
+			]
+		},
+
+		{
+			"type": "text",
+			"id": "caption_text",
+			"label": "Caption Text",
+			"default": "Reviews from:"
+		},
+		{
+			"type": "image_picker",
+			"id": "header_logo",
+			"label": "Header logo image (185x45px)"
+		}
+	],
+	"blocks": [
+		{
+			"type": "quote",
+			"name": "Quote",
+			"settings": [
+				{
+					"type": "select",
+					"id": "star",
+					"label": "Review Stars",
+					"default": "none",
+					"options": [
+						{
+							"value": "none",
+							"label": "None"
+						},
+						{
+							"value": "1",
+							"label": "1"
+						},
+						{
+							"value": "2",
+							"label": "2"
+						},
+						{
+							"value": "3",
+							"label": "3"
+						},
+						{
+							"value": "4",
+							"label": "4"
+						},
+						{
+							"value": "5",
+							"label": "5"
+						}
+					]
+				},
+				{
+					"type": "textarea",
+					"id": "quote",
+					"label": "Quote Text",
+					"default": "Add customer reviews and testimonials to showcase your store’s happy customers."
+				},
+				{
+					"type": "image_picker",
+					"id": "author_img",
+					"label": "Author image"
+				},
+				{
+					"type": "text",
+					"id": "author",
+					"label": "Quote Author",
+					"default": "Author's name"
+				},
+				{
+					"type": "text",
+					"id": "author_info",
+					"label": "Author Info",
+					"default": "Author's info"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Testimonials",
+			"category": "Text",
+			"blocks": [
+				{
+					"type": "quote"
+				},
+				{
+					"type": "quote"
+				},
+				{
+					"type": "quote"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(document).ready(function($) {
+	$('.testimonials_slider').each(function() {
+		var pagination = '#' + $(this).attr('id').replace('testimonials_','pagination_');
+
+		var testimonialSlider = new Swiper( '#' + $(this).attr('id'), {
+			slidesPerView: 1,
+			grabCursor: true,
+			pagination: {
+				el: pagination,
+				clickable: true
+			}
+		});	
+	});
+});
+{% endjavascript %}
+	
+

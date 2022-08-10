@@ -1,0 +1,238 @@
+{%- for block in section.blocks -%}
+	{%- assign bl_set = block.settings -%}
+	{% unless block.type == 'collection_image' or block.type == 'tag_image' or block.type == 'Banner'  %}
+		<div class="sidebar">
+                 
+          
+		{% case block.type %}
+		
+                  
+			{% when 'widget_collections' %}
+			<div class="sidebar_widget sidebar_widget__collections">
+				<h6 class="widget_header widget_toggle{% if bl_set.widget_open_toggle  %} open{% endif %}">{{ bl_set.title | escape }}<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg></h6>
+				
+				<div class="widget_content content-widget_toggle">
+					<ul class="link_list">
+						{% assign tmp_col_size = collection.id | size | plus:0 %}
+						
+						{% for collection in collections %}
+							
+							{% if tmp_col_size > 0 %}
+								{% assign tmp_col = collection.title | escape | handleize | replace: '-amp-', '-' %}
+							{% endif %}
+							
+							<li>
+								<a {% if tmp_col_size > 0 and tmp_col == handle %}class="active"{% endif %} href="{{ collection.url }}">{{ collection.title | escape }}</a>
+							</li>
+						
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			
+			{% when 'widget_linklist' %}
+			<div class="sidebar_widget sidebar_widget__linklist">
+				<h6 class="widget_header widget_toggle{% if bl_set.widget_open_toggle  %} open{% endif %}">{{ bl_set.title | escape }}<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg></h6>
+				
+				<div class="widget_content content-widget_toggle">
+					{%- assign links_small = bl_set.links -%}
+					
+					<ul class="link_list">
+						
+						{% for link in linklists[links_small].links %}
+							{%- assign child_list_handle = link.title | handleize -%}
+							
+							{%- assign link_count = 0 -%}
+							{% for childlink in linklists[child_list_handle].links %}
+								{%- assign link_count = link_count | plus: 1 -%}
+							{% endfor %}
+							
+							<li class="level_1__item {% if link_count > 0 %}with_ul{% endif %}">
+								<a class="level_1__link" href="{{ link.url }}">{{ link.title }}</a>
+								
+								{% if link_count > 0 %}
+									<span>
+												<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg" class="level_1__trigger menu_trigger" data-submenu="submenu_{{ block.id }}-{{ forloop.index }}"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg>
+											</span>
+									<ul class="level_1_2 droped_linklist" id="submenu_{{ block.id }}-{{ forloop.index }}" style="display: none">
+										{% for childlink in linklists[child_list_handle].links %}
+											{%- assign child_list_2_handle = childlink.title | handleize -%}
+											
+											{%- assign link_count = 0 -%}
+											{% for childlink in linklists[child_list_2_handle].links %}
+												{%- assign link_count = link_count | plus: 1 -%}
+											{% endfor %}
+											
+											<li class="level_1_2_item {% if link_count > 2 %}with_ul{% endif %}">
+												<a class="level_1_2_link" href="{{ childlink.url }}">{{ childlink.title }}</a>
+												
+												{% if link_count > 0 %}
+													<span>
+																<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg" class="level_1__trigger menu_trigger" data-submenu="submenu_{{ block.id }}-{{ forloop.index }}"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg>
+															</span>
+													<ul class="level_1_3 droped_linklist" id="subsubmenu_{{ block.id }}-{{ forloop.index }}">
+														{% for childlink in linklists[child_list_2_handle].links %}
+															<li class="level_1_3_item">
+																<a class="level_1_3_link" href="{{ childlink.url }}">{{ childlink.title }}</a>
+															</li>
+														{% endfor %}
+													</ul>
+												{% endif %}
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			
+			{% when 'widget_types' %}
+		
+				<div class="sidebar_widget sidebar_widget__types">
+				<h6 class="widget_header widget_toggle{% if bl_set.widget_open_toggle  %} open{% endif %}">{{ bl_set.title | escape }}<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg></h6>
+				
+				<div class="widget_content content-widget_toggle">
+					<ul class="link_list">
+						{% for product_type in shop.types %}
+							{% if product_type.size > 0 %}
+								
+								{% if canonical_url contains 'types' %}
+									{% assign tmp_title = page_title | escape | handleize  %}
+									{% assign tmp_type = product_type | escape | handleize  %}
+								{% endif %}
+								
+								<li><a {% if tmp_title and tmp_title == tmp_type  %}class="active"{% endif %} href="{{ product_type | url_for_type }}">{{ product_type }}</a></li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			
+			
+			{% when 'widget_vendors' %}
+			
+				<div class="sidebar_widget sidebar_widget__vendors">
+				<h6 class="widget_header widget_toggle{% if bl_set.widget_open_toggle  %} open{% endif %}">{{ bl_set.title | escape }}<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg></h6>
+				
+				<div class="widget_content content-widget_toggle">
+					<ul class="link_list">
+						{% for vendor in shop.vendors %}
+							{% if canonical_url contains 'vendors' %}
+								{% assign tmp_title = page_title | escape | handleize %}
+								{% assign tmp_vendor = vendor | escape | handleize %}
+							{% endif %}
+							<li><a {% if tmp_title and tmp_title == tmp_vendor %}class="active"{% endif %} href="{{ vendor | url_for_vendor }}">{{ vendor }}</a></li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+			 
+			{% when 'widget_price_sort' %}
+			
+          
+           <h6 class="widget_header cstm_hide_side">Sort by</h6>
+           <ul class="cstm_hide_side">
+            <li><a href="{{ collection.url | sort_by: 'manual' }}">Featured</a></li>
+            <li><a href="{{ collection.url | sort_by: 'best-selling' }}">Best Selling</a></li>
+            <li><a href="{{ collection.url | sort_by: 'price-ascending' }}">Low to High</a></li>
+            <li><a href="{{ collection.url | sort_by: 'price-descending' }}">High to Low</a></li>
+            <li><a href="{{ collection.url | sort_by: 'created-ascending' }}">Old to New</a></li>
+            <li><a href="{{ collection.url | sort_by: 'created-descending' }}">New to Old</a></li>
+          </ul>
+         <br>
+          
+				<div class="sidebar_widget sidebar_widget__price_sort">
+					<h6 class="widget_header widget_toggle{% if bl_set.widget_open_toggle  %} open{% endif %}">{{ bl_set.title | escape }}<svg width="9" height="6" viewBox="0 0 9 6" xmlns="http://www.w3.org/2000/svg"><path d="M9 1.5L7.5 0L4.5 3L1.5 0L0 1.5L4.5 6L9 1.5Z" /></svg></h6>
+					<div class="widget_content content-widget_toggle">
+						<div class="slider-range-wr pl-1">
+							<p class="mb-3"><span class="pr-1">{{ 'layout.product.price' | t }}:</span><span class="amount"><span class="js-range-min"></span> - <span class="js-range-max"></span></span> </p>
+							<div id="js-slider-range" data-url="{{ collection.url }}"></div>
+						</div>
+					</div>
+				</div>
+			          
+			{% when 'widget_search' %}
+				{% render 'widget-sidebar-search' %}
+		
+			{% when 'widget_banner' %}
+			{% case bl_set.banner_height %}
+			{% when 'small'  %}{%- assign img_size = '270x151' -%}
+			{% when 'medium' %}{%- assign img_size = '270x270' -%}
+			{% when 'large'  %}{%- assign img_size = '270x380' -%}
+			{% endcase %}
+			<div class="sidebar_widget no-border sidebar_widget__banner">
+				<div class="sidebar_banner_thumbnail">
+					{% if bl_set.image.size > 0 %}
+						<img class="img-fluid" src="{{ bl_set.image | img_url: img_size, crop: 'center' }}" alt="">
+					{% else %}
+						<div class="img_placeholder__wrap  img_placeholder__{{ bl_set.banner_height }}">
+							{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+						</div>
+					{% endif %}
+					
+					<div class="sidebar_banner_caption">
+						{% if bl_set.link.size > 0 %}
+						<a href="{{ bl_set.link }}">
+							{% endif %}
+							
+							{% if bl_set.title.size > 0 %}
+								<h4>{{ bl_set.title | escape }}</h4>
+							{% endif %}
+							
+							{% if bl_set.text.size > 0 %}
+								<p>{{ bl_set.text | strip_html }}</p>
+							{% endif %}
+							
+							{% if bl_set.link.size > 0 %}
+						</a>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		
+			{% when 'widget_products' %}
+			<div class="sidebar_widget no-border sidebar_widget__products">
+				<h6 class="widget_header">{{ bl_set.title | escape }}</h6>
+				<div class="widget_content">
+					<ul class="list_products">
+						{% for product in collections[bl_set.products_collections].products limit:3 %}
+							<li class="product">
+								<div class="product_img">
+									<a href="{{ product.url | within: collection }}">
+										<img class="img-fluid" src="{{ product.featured_image.src | product_img_url: '163x209', crop:'center' }}" alt="{{ product.featured_image.alt | escape }}" />
+									</a>
+								</div>
+								
+								<div class="product_info">
+									<div class="product_name">
+										<a href="{{ product.url | within: collection }}">{{ product.title | truncate: 30 }}</a>
+									</div>
+									
+									<div class="product-price-container">
+										<span class="product-price money">{{ product.price | money }}</span>
+										{% if product.compare_at_price and product.compare_at_price > product.price %}
+											<span class="product-regular-price money">{{ product.compare_at_price | money }}</span>
+										{% endif %}
+									</div>
+								
+								</div>
+							</li>
+						{% endfor %}
+					</ul>
+				</div>
+			</div>
+		
+		{% endcase %}
+		
+	</div>
+	{% endunless %}
+{%- endfor -%}
+
+                  
+
+
+
+

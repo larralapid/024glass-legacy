@@ -1,0 +1,309 @@
+{%- assign item = section.settings -%}
+{%- assign paginate_blog = item.pagination_count -%}
+{%- paginate blog.articles by paginate_blog -%}
+<div class="blog__main">
+  {% if item.blog_template_title.size > 0 %}
+    <h1 class="section_heading text-center">{{ item.blog_template_title }}</h1>
+  {% endif %}
+  
+  {%- case item.layout -%}
+  {%- when 'left_column' -%}
+  <div class="row flex-sm-row-reverse">
+    <div class="col-sm-12 col-md-8 col-lg-9">
+      {%- include 'blog-grid-sidebar' -%}
+    </div>
+    <div class="col-sm-12 col-md-4 col-lg-3 leftColumn">
+      {%- include 'sidebar-blog' -%}
+    </div>
+  </div>
+  
+  {%- when 'right_column' -%}
+  <div class="row">
+    <div class="col-sm-12 col-md-8 col-lg-9">
+      {%- include 'blog-grid-sidebar' -%}
+    </div>
+    <div class="col-sm-12 col-md-4 col-lg-3 rightColumn">
+      {%- include 'sidebar-blog' -%}
+    </div>
+  </div>
+  
+  {%- when 'masonry_grid' -%}
+  {%- include 'blog-masonry' -%}
+  
+  {%- when 'layout_grid_3' -%}
+  {%- include 'blog-grid' -%}
+  
+  {%- else -%}
+  {%- include 'blog-listing' -%}
+  
+  {%- endcase -%}
+</div>
+{% endpaginate %}
+
+{% schema %}
+{
+"name": "Blog pages",
+"settings": [
+{
+"type": "select",
+"id": "layout",
+"label": "Design",
+"default": "left_column",
+"options": [
+{
+"value": "left_column",
+"label": "with Left Column"
+},
+{
+"value": "right_column",
+"label": "with Right Column"
+},
+{
+"value": "no_column",
+"label": "No Column"
+},
+{
+"value": "masonry_grid",
+"label": "Masonry Grid"
+},
+{
+"value": "layout_grid_3",
+"label": "Layout Grid 3"
+}
+],"default": "masonry_grid"
+},
+{
+"type": "text",
+"id": "blog_template_title",
+"label": "blog template title"
+},
+
+{
+"type": "select",
+"id": "pagination_count",
+"label": "Paginated by",
+"options": [
+{
+"value": "3",
+"label": "3"
+},
+{
+"value": "6",
+"label": "6"
+},
+{
+"value": "9",
+"label": "9"
+},
+{
+"value": "12",
+"label": "12"
+}
+],
+"default": "9"
+},
+
+{
+"type": "checkbox",
+"id": "blog_show_tags",
+"label": "Show tags",
+"default": true
+},
+
+{
+"type": "checkbox",
+"id": "blog_show_info",
+"label": "Show info",
+"default": true
+},
+
+{
+"type": "checkbox",
+"id": "blog_show_author",
+"label": "Show author",
+"default": true
+},
+
+{
+"type": "checkbox",
+"id": "blog_show_date",
+"label": "Show date",
+"default": true
+},
+
+{
+"type": "checkbox",
+"id": "show_comments",
+"label": "Show comments",
+"default": true
+},
+
+{
+"type": "select",
+"id": "img_alignment",
+"label": "Images alignment",
+"options": [
+{
+"value": "top",
+"label": "Top"
+},
+{
+"value": "center",
+"label": "Middle"
+},
+{
+"value": "bottom",
+"label": "Bottom"
+}
+]
+}
+
+],
+"blocks": [
+// BLOG SEARCH
+{
+"type": "blog_search",
+"name": "Blog search",
+"settings": [
+{
+"type": "text",
+"id": "search_title",
+"label": "Widget title",
+"default": "Search blog"
+}
+]
+},
+
+// LINK LISTS
+{
+"type": "link-list",
+"name": "Link lists",
+"settings": [
+{
+"type": "text",
+"id": "block_title",
+"label": "Widget title",
+"default": "Link lists"
+},
+{
+"type": "link_list",
+"id": "links",
+"label": "Choose linklist"
+}
+]
+},
+
+// RECENT ARTICLES
+{
+"type": "resent_articles",
+"name": "Resent articles",
+"settings": [
+{
+"type": "text",
+"id": "title",
+"label": "Widget title",
+"default": "Resent articles"
+}
+]
+},
+
+// TAGS
+{
+"type": "blog_tags",
+"name": "Blog tags",
+"settings": [
+{
+"type": "text",
+"id": "title",
+"label": "Widget title",
+"default": "Blog tags"
+}
+]
+},
+
+// COMMENTS
+{
+"type": "blog_comments",
+"name": "Blog comments",
+"settings": [
+{
+"type": "text",
+"id": "title",
+"label": "Widget title",
+"default": "Blog comments"
+}
+]
+},
+
+// BANNER
+{
+"type": "widget_banner",
+"name": "Banner",
+"settings": [
+{
+"type": "image_picker",
+"id": "image",
+"label": "Image",
+"info": "The image should be more than 280px wide to resize and crop properly"
+},
+{
+"type": "select",
+"id": "banner_height",
+"label": "Banner height",
+"default": "medium",
+"options": [
+{
+"label": "Small (280x151)",
+"value": "small"
+},
+{
+"label": "Medium (280x280)",
+"value": "medium"
+},
+{
+"label": "Large (280x380)",
+"value": "large"
+}
+]
+},
+{
+"type": "text",
+"id": "title",
+"label": "Heading",
+"default": "Title"
+},
+{
+"type": "text",
+"id": "text",
+"label": "Text",
+"default": "Banner text"
+},
+{
+"type": "url",
+"id": "link",
+"label": "Link"
+},
+{
+"type": "select",
+"id": "caption_position",
+"label": "Caption position",
+"options": [
+{
+"label": "Top",
+"value": "top"
+},
+{
+"label": "Bottom",
+"value": "bottom"
+},
+{
+"label": "Center",
+"value": "center"
+}
+]
+}
+]
+}
+]
+}
+{% endschema %}

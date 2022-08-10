@@ -1,0 +1,252 @@
+{% case section.settings.section_blog_limit %}
+	{% when '1'  %}{%- assign item_class = 'col-12' -%}
+	{% when '2' %}{%- assign item_class = 'col-12 col-md-6 two-column mb-4 mb-md-0' -%}
+	{% when '3'  %}{%- assign item_class = 'col-12 col-md-4 three-column mb-4 mb-md-0' -%}
+	{% when '4'  %}{%- assign item_class = 'col-12 col-md-4 col-lg-3 four-column mb-4 mb-md-0' -%}
+	{% when '5'  %}{%- assign item_class = 'col-12 col-md-4 col-lg-auto five-column mb-4 mb-md-0' -%}
+{% endcase %}
+
+{%- assign item = section.settings -%}
+{%- assign postCount = section.settings.section_blog_limit | plus: 0 -%}
+{%- assign postView = section.settings.post_view -%}
+
+
+<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'full-width' %}full-width{% endif %} blog__main">
+	{% if section.settings.section_title.size > 0 %}
+		<h4 class="section_heading mb-0 {% if section.settings.post_view == '1' %} text-center{% else %} col-xl-3 px-0 text-left{% endif %}"><span>{{ section.settings.section_title }}</span></h4>
+	{% endif %}
+
+	{%- assign section_blog = blogs[section.settings.section_blog] -%}
+
+	{% unless section_blog.empty? %}
+	
+	{% if postCount > 3  %}
+		<div id="post_carousel_{{ section.id }}" class="post_carousel swiper-container mt-md-4 mt-2 swiper-nav-wrapper {% if section.settings.post_view == '1' %}  swiper-nav-wrapper_mod{% endif %}" data-slides-per-view="{{ postView }}">
+			<div class="swiper-wrapper mx-0 mb-3">
+				{%  for article in section_blog.articles limit: postCount %}
+					<div class="swiper-slide">
+						{% if section.settings.post_view == '1' %}
+							{% include 'blog-listing-item' %}
+						{% else %}
+							{% include 'blog-grid-item' %}
+						{% endif %}
+					</div>
+				{% endfor %}
+			</div>
+			{% if section.settings.carousel_control_type == 'pagination' %}
+					<div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+				
+				{% elsif section.settings.carousel_control_type == 'navigation' %}
+					<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+					<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+				
+				{% elsif section.settings.carousel_control_type == 'all' %}
+					<div id="pagination_{{ section.id }}" class="swiper_pagination"></div>
+					<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+					<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+				
+			{% endif %}
+		</div>
+	{% else %}
+		<div class="row">
+			{% for article in section_blog.articles limit: postCount %}
+				<div class="{{ item_class }}">
+					{% if section.settings.section_blog_limit == '1' %}
+						{% include 'blog-listing-item' %}
+					{% else %}
+						{% include 'blog-grid-item' %}
+					{% endif %}
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	{% endunless %}
+
+</div>
+
+{% schema %}
+{
+	"name": "Blog articles",
+	"class": "section section_homepage index_section_blog-articles",
+	"settings": [
+		{
+			"type": "select",
+			"id": "container_settings",
+			"label": "Blog layout",
+			"options": [
+				{
+				"value": "container",
+				"label": "Container"
+				},
+				{
+				"value": "full-width",
+				"label": "Full width"
+				}
+			],
+			"default": "full-width"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Heading",
+			"default": "Blog"
+		},
+		{
+			"type": "blog",
+			"id": "section_blog",
+			"label": "Blog"
+		},
+		{
+			"type": "select",
+			"id": "section_blog_limit",
+			"label": "Show posts",
+			"default": "4",
+			"options": [
+				{
+					"value": "1",
+					"label": "1"
+				},
+				{
+					"value": "2",
+					"label": "2"
+				},
+				{
+					"value": "3",
+					"label": "3"
+				},
+				{
+					"value": "4",
+					"label": "4"
+				},
+				{
+					"value": "5",
+					"label": "5"
+				}
+			]
+		},
+
+		{
+			"type": "checkbox",
+			"id": "blog_show_info",
+			"label": "Show info",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_author",
+			"label": "Show author",
+			"default": true
+		},
+		
+		{
+			"type": "checkbox",
+			"id": "blog_show_date",
+			"label": "Show date",
+			"default": true
+		},
+		
+		{
+		"type": "checkbox",
+		"id": "show_comments",
+		"label": "Show comments",
+		"default": true
+		},
+
+
+		{
+			"type": "header",
+			"content": "Carousel settings"
+		},
+
+		{
+		"type": "select",
+		"id": "post_view",
+		"label": "Carousel post view",
+			"options": [
+				{
+					"value": "1",
+					"label": "1"
+				},
+				{
+					"value": "2",
+					"label": "2"
+				},
+				{
+					"value": "3",
+					"label": "3"
+				}
+			],
+			"default": "3"
+		},
+
+		{
+			"type": "select",
+			"id": "carousel_control_type",
+			"label": "Control type",
+				"options": [
+					{
+						"value": "pagination",
+						"label": "Pagination"
+					
+					},
+					{
+						"value": "navigation",
+						"label": "Navigation"
+					},
+					{
+						"value": "all",
+						"label": "Pagination and Navigation"
+					}
+				],
+			"default": "pagination"
+		}
+	],
+	"presets": [
+		{
+			"name": "Blog articles",
+			"category": "Blog",
+			"settings": {
+				"section_blog": "News",
+				"section_blog_limit": "4"
+			}
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(document).ready(function($) {
+		$('.post_carousel').each(function(i) {
+		
+		var sliderPostId = '#' + $(this).attr('id');
+		var sliderPostVar = $(this).attr('id');
+		var sliderPostPagination = '#pagination_' + sliderPostVar.replace('post_carousel_', '');
+		
+			var carouselPostVar = new Swiper( sliderPostId, {
+				effect: 'slide',
+				slidesPerView: 1,
+				spaceBetween: 30,
+				speed: 500,
+				autoplayDisableOnInteraction: false,
+				pagination: {
+					el: sliderPostPagination,
+					type: 'bullets',
+					clickable: true
+				},
+				navigation: {
+					nextEl: $(this).parent().find('.swiper-button-next'),
+					prevEl: $(this).parent().find('.swiper-button-prev')
+				},
+				breakpoints: {
+					768: {
+						slidesPerView: 2
+					},
+					1024: {
+						slidesPerView: parseInt($(this).attr('data-slides-per-view')) || 3
+					}
+				}
+			});
+		});
+	});
+{% endjavascript %}

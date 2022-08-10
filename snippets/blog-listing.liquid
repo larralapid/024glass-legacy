@@ -1,0 +1,10 @@
+<div class="blog_listing__main blog_listing__main_list">
+	{%- for article in blog.articles -%}
+		{%- include 'blog-listing-item' -%}
+	{%- endfor -%}
+	
+	{%- if paginate.pages > 1 -%}
+      {% assign pagination_items = 'layout.pagination.articles' | t %}
+      {%- include 'snippet-pagination' with pagination_items -%}
+	{%- endif -%}
+</div>

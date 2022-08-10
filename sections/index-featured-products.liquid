@@ -1,0 +1,141 @@
+{%- case section.settings.img_size -%}
+	{%- when 'medium' -%}{%- assign img_size = '370x370' -%}{%- assign img_rate = 'medium' -%}
+	{%- when 'large'  -%}{%- assign img_size = '450x450' -%}{%- assign img_rate = 'large' -%}
+{%- endcase -%}
+
+{% if section.settings.background_toggle %}
+	<div style="background-color: {{ section.settings.bg_color }}" class="bg-section">
+{% endif %}
+
+<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'full-width' %}full-width{% endif %}">
+	{% if section.settings.section_title.size > 0 %}<h2 class="section_heading">{{ section.settings.section_title | escape }}</h2>{% endif %}
+
+	{%- assign collection = collections[section.settings.section_collection] -%}
+
+	<div class="row product_listing__main product_listing__grid product_limit_{{ section.settings.products_limit }}">
+		{% for product in collection.products limit: section.settings.products_limit %}
+			<div class="col-6 col-md-4 col-xl-3 product_item_wrap">
+				{% include 'product-listing-item' img_size: img_size, img_min_size: '130x160', img_alignment: section.settings.img_alignment %}
+			</div>
+		{% endfor %}
+	</div>
+</div>
+{% if section.settings.background_toggle %}
+	</div>
+{% endif %}
+
+{% schema %}
+{
+	"name": "Featured products",
+	"class": "section section_homepage section_featured-products",
+	"settings": [
+		{
+			"id": "section_title",
+			"type": "text",
+			"label": "Heading",
+			"default": "Featured products"
+		},
+		{
+			"type": "checkbox",
+			"id": "background_toggle",
+			"label": "Show background color",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "bg_color",
+			"label": "Background color",
+			"default": "#F6F7F9"
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Container"
+				},
+				{
+					"value": "full-width",
+					"label": "Full width"
+				}
+			],
+			"default":   "container"
+		},
+		{
+			"type": "collection",
+			"id": "section_collection",
+			"label": "Collection"
+		},
+		{
+			"type": "select",
+			"id": "products_limit",
+			"label": "Show products",
+			"options": [
+				{
+					"value": "4",
+					"label": "4"
+				},
+				{
+					"value": "8",
+					"label": "8"
+				},
+				{
+					"value": "12",
+					"label": "12"
+				},
+				{
+					"value": "16",
+					"label": "16"
+				},
+				{
+					"value": "20",
+					"label": "20"
+				}
+			],
+			"default": "4"
+		},
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "medium",
+					"label": "Medium"
+				},
+				{
+					"value": "large",
+					"label": "Large"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Featured products",
+			"category": "Products"
+		}
+	]
+}
+{% endschema %}

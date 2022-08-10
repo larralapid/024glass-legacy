@@ -1,0 +1,51 @@
+
+<div class="pagination">
+		{% assign A = paginate.current_offset | plus:1 %}
+		{% assign B = paginate.items %}
+		{% assign C = paginate.current_offset | plus:paginate.page_size %}
+
+		{% if paginate.current_page == paginate.pages %}
+			{% if A == B %}
+				<p>{{ A }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% else %}
+				<p>{{ A }} – {{ B }} {{ pagination_items }} {{ paginate.items }}</p>
+			{% endif %}
+		{% else %}
+			<p>{{ A }} – {{ C }} {{ pagination_items }} {{ paginate.items }}</p>
+		{% endif %}
+
+		<ul>
+			{% if paginate.previous.is_link %}
+				<li class="pagination_prev">
+					<a class="d-inline-flex align-items-center" href="{{ paginate.previous.url }}" title="{{ 'layout.pagination.previous' | t }}" >
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M10.8273 11.9997L15.7773 7.04974L14.3633 5.63574L7.99934 11.9997L14.3633 18.3637L15.7773 16.9497L10.8273 11.9997Z" />
+						</svg>
+						<span class="d-none d-md-block">{{ 'layout.pagination.previous' | t }}</span>
+					</a>
+				</li>
+			{% endif %}
+
+			{% for part in paginate.parts %}
+				{% if part.is_link %}
+					<li class="pagination_el"><a href="{{ part.url }}">{{ part.title }}</a></li>
+				{% else %}
+					{% if part.title == paginate.current_page %}
+						<li class="pagination_current pagination_el"><span>{{ part.title }}</span></li>
+					{% else %}
+						<li class="pagination_el"><span>{{ part.title }}</span></li>
+					{% endif %}
+				{% endif %}
+			{% endfor %}
+			{% if paginate.next.is_link %}
+				<li class="pagination_next">
+					<a class="d-inline-flex align-items-center" href="{{ paginate.next.url }}" title="{{ 'layout.pagination.next' | t }}">
+						<span class="d-none d-md-block">{{ 'layout.pagination.next' | t }}</span>
+						<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M13.1727 11.9997L8.22266 7.04974L9.63666 5.63574L16.0007 11.9997L9.63666 18.3637L8.22266 16.9497L13.1727 11.9997Z" />
+						</svg>
+					</a>
+				</li>
+			{% endif %}
+			</ul>
+</div>

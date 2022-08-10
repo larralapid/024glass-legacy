@@ -1,0 +1,305 @@
+<div class="single_product__details">
+  <form action="/cart/add" method="post" enctype="multipart/form-data" data-section="{{ section.id }}">
+    <div class="details_wrapper">
+      <div class="flex-wrapper">
+        
+        <p class="single_product__availability">
+          <span id="single_product__availability-{{ section.id }}"></span>
+        </p>
+        
+        
+        {% if settings.product_reviews %}
+          <span class="shopify-product-reviews-badge" data-id="{{ product.id }}"></span>
+        
+        {% endif %}
+      </div>
+      
+      
+      <h2 itemprop="name" class="single_product__title mt-3 mb-0 h4">{{ product.title }}</h2>
+      
+      <div id="single_product__price-{{ section.id }}" class="single_product__price">
+        <span class="product-price money">{{ product.price | money }}</span>
+      </div>
+      
+      {% if p_item.show_short_desc %}
+        <p class="single_product__short_desc">
+          {{ product.description | strip_html | truncate: 180 }}
+        </p>
+      {% endif %}
+  
+      {% if p_item.show_color %}
+        {% if  product.available and product.variants.size > 1 %}
+          {% if product.options.size > 0 %}
+            {% if product.options contains 'Color' %}
+              <div class="color_product__options ">
+                {% if option_color_index %}
+                  <div class="color_toggle" data-option-index="{{ option_color_index }}"></div>
+                {% endif %}
+                {% include 'swatch' with 'Color' as swatch %}
+              </div>
+              <div class="clearfix"></div>
+          {% endif %}
+        {% endif %}
+        {% endif %}
+      {% endif %}
+      
+      
+      {% if p_item.show_size_chart and pages.size-guide and pages.size-guide.content != '' %}
+      <div class="flex-wrapper {% if product.options contains 'Size' and p_item.show_size %} justify-content-between {% else %} justify-content-start {% endif %} mt-2 mt-md-3">
+        {% endif %}
+        
+         {% if p_item.show_size %}
+          {% if product.available and product.variants.size > 1 %}
+            {% if product.options.size > 0 %}
+                {% if product.options contains 'Size' %}
+                  <div class="size_product__options  {% if  p_item.show_size_chart %} mb-0{% endif %}">
+                    {% include 'swatch' with 'Size' as swatch %}
+                  </div>
+                  <div class="clearfix"></div>
+                {% endif %}
+            {% endif %}
+          {% endif %}
+         {% endif %}
+        
+        {% if p_item.show_size_chart and pages.size-guide and pages.size-guide.content != '' %}
+        <div class="product_sizechart">
+          <div class="product_sizechart_toggle link">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M5.28698 10.5908L3.69698 12.1823L5.81798 14.3033L14.3027 5.81777L12.1817 3.69752L10.5895 5.28752L11.6507 6.34802L10.5895 7.41002L9.52898 6.34877L8.46848 7.41002L9.52898 8.47052L8.46848 9.53102L7.40798 8.47052L6.34673 9.53102L7.40798 10.5915L6.34673 11.6528L5.28698 10.59V10.5908ZM12.712 2.10602L15.8935 5.28752C16.0341 5.42817 16.1131 5.6189 16.1131 5.81777C16.1131 6.01664 16.0341 6.20738 15.8935 6.34802L6.34748 15.894C6.20683 16.0346 6.0161 16.1136 5.81723 16.1136C5.61836 16.1136 5.42763 16.0346 5.28698 15.894L2.10548 12.7125C1.96488 12.5719 1.88589 12.3811 1.88589 12.1823C1.88589 11.9834 1.96488 11.7927 2.10548 11.652L11.6515 2.10602C11.7921 1.96542 11.9829 1.88643 12.1817 1.88643C12.3806 1.88643 12.5713 1.96542 12.712 2.10602ZM10.5895 13.7723L11.6507 12.7118L13.3322 14.394H14.3927V13.3335L12.7112 11.6513L13.7717 10.5908L15.7495 12.5678V15.75H12.568L10.5902 13.7723H10.5895ZM4.22648 7.40852L2.10473 5.28752C2.035 5.21787 1.97968 5.13515 1.94194 5.0441C1.90419 4.95305 1.88477 4.85546 1.88477 4.7569C1.88477 4.65833 1.90419 4.56074 1.94194 4.46969C1.97968 4.37864 2.035 4.29593 2.10473 4.22627L4.22648 2.10527C4.36713 1.96467 4.55786 1.88568 4.75673 1.88568C4.9556 1.88568 5.14633 1.96467 5.28698 2.10527L7.40948 4.22627L6.34748 5.28752L4.75673 3.69602L3.69623 4.75727L5.28698 6.34727L4.22648 7.40852Z" fill="#797B7E"/>
+            </svg>
+            <span>{{ 'layout.product.size_chart' | t }}</span>
+          </div>
+          
+          <div id="size-chart">
+            {{ pages.size-guide.content }}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+      
+      {% if settings.use_custom_all_options %}
+        {% if product.available and product.variants.size > 1 %}
+          {% if product.options.size > 1 %}
+            {% for option in product.options %}
+              {% if option == 'Color' or option == 'Size' %}
+              {% else %}
+                <div class="product__options">
+                  {% include 'swatch' with option %}
+                </div>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endif %}
+        <div class="clearfix"></div>
+      {% endif %}
+  
+  
+      <div class="single_product__options{% if product.variants.size == 1 and product.variants.first.title contains 'Default' %} hidden{% endif %}">
+        <select name="id" id="product_select_{{ section.id }}" class="custom-select">
+          {% for variant in product.variants %}
+            <option value="{{ variant.id }}">{{ variant.title | escape }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      
+      
+      <div class="single_product__quantity">
+        
+        <div class="product-add-to-cart-wrapper">
+          <label for="single_product__quantity-{{ section.id }}">{{ 'layout.product.quantity' | t }}: </label>
+          <div class="quantity_box">
+            <input id="single_product__quantity-{{ section.id }}" class="form-control quantity_input" type="text" name="quantity" value="1">
+            <div class="quantity_modifier quantity_up">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.41699 6.41699V2.91699H7.58366V6.41699H11.0837V7.58366H7.58366V11.0837H6.41699V7.58366H2.91699V6.41699H6.41699Z" fill="#797B7E"/></svg>
+            </div>
+            <div class="quantity_modifier quantity_down">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.91699 6.41699H11.0837V7.58366H2.91699V6.41699Z" fill="#797B7E"/></svg>
+            </div>
+          </div>
+          <button type="submit" name="add" class="btn btn-primary icon-svg mr-1 btn-add-to-cart w-100" id="single_product__addtocart-{{ section.id }}">
+            <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7.05518 8V6C7.05518 4.67392 7.58169 3.40215 8.51888 2.46447C9.45608 1.52678 10.7272 1 12.0526 1C13.378 1 14.6491 1.52678 15.5863 2.46447C16.5235 3.40215 17.05 4.67392 17.05 6V8H20.0484C20.3135 8 20.5677 8.10536 20.7552 8.29289C20.9426 8.48043 21.0479 8.73478 21.0479 9V21C21.0479 21.2652 20.9426 21.5196 20.7552 21.7071C20.5677 21.8946 20.3135 22 20.0484 22H4.05673C3.79165 22 3.53743 21.8946 3.34999 21.7071C3.16255 21.5196 3.05725 21.2652 3.05725 21V9C3.05725 8.73478 3.16255 8.48043 3.34999 8.29289C3.53743 8.10536 3.79165 8 4.05673 8H7.05518ZM7.05518 10H5.05621V20H19.049V10H17.05V12H15.051V10H9.05414V12H7.05518V10ZM9.05414 8H15.051V6C15.051 5.20435 14.7351 4.44129 14.1728 3.87868C13.6105 3.31607 12.8478 3 12.0526 3C11.2573 3 10.4947 3.31607 9.93236 3.87868C9.37004 4.44129 9.05414 5.20435 9.05414 6V8Z" fill="#FFFFFF"/>
+            </svg>
+            
+            {{ 'layout.product.add_to_cart' | t }}
+          </button>
+        </div>
+      </div>
+      
+      {% if shop.customer_accounts_enabled or p_item.show_notify_button %}
+        <div class="my-3 flex-wrapper">
+          {% if shop.customer_accounts_enabled %}
+            <div class="single_product__wishlist">
+              {% if customer %}
+                {% if settings.wishlist_toggle == true and settings.wishlist_page != '' %}
+                  <a class="wishlist_btn link-icon icon-svg" href="{{ pages[settings.zemez_wishlist_page].url }}" data-product="{{ product.handle }}" data-customer="{{ customer.id }}" data-action="{% if customer.metafields.zemez_modules.wishlist contains product.handle %}remove{% else %}add{% endif %}" onclick="zemezWishlist(this); return false;">
+														<span class="action_remove">
+																<span class="wishlist-icon">
+																	<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+																		<path d="M16.1674 3.00234C14.6345 2.95993 13.1436 3.50626 12.001 4.52906C10.8589 3.50616 9.36854 2.95929 7.83589 3.00073C6.30323 3.04217 4.84459 3.66877 3.75942 4.75189C2.67425 5.83501 2.04489 7.29247 2.00056 8.82505C1.95623 10.3576 2.50028 11.849 3.52102 12.9931L11.999 21.4851L20.479 12.9931C21.4986 11.8496 22.0421 10.3595 21.9982 8.82815C21.9543 7.29681 21.3264 5.84025 20.243 4.75706C19.1587 3.67266 17.7003 3.04474 16.1674 3.00234Z" fill="#505152"/>
+																	</svg>
+																</span>
+															<span class="remove-wishlist-txt ml-1">{{ 'layout.wishlist.remove_from_wishlist' | t }}</span>
+														</span>
+                    <span class="action_add">
+																<span class="wishlist-icon">
+																<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+																	<path d="M12.001 4.52894C13.1436 3.50614 14.6345 2.95981 16.1674 3.00221C17.7003 3.04462 19.1587 3.67254 20.243 4.75694C21.3264 5.84013 21.9543 7.29669 21.9982 8.82803C22.0421 10.3594 21.4986 11.8495 20.479 12.9929L11.999 21.4849L3.52102 12.9929C2.50028 11.8489 1.95623 10.3575 2.00056 8.82492C2.04489 7.29235 2.67425 5.83489 3.75942 4.75177C4.84459 3.66865 6.30323 3.04205 7.83589 3.00061C9.36854 2.95917 10.8589 3.50604 12.001 4.52894ZM18.827 6.16994C18.1046 5.44807 17.1333 5.03002 16.1125 5.00157C15.0916 4.97312 14.0985 5.33642 13.337 6.01694L12.002 7.21494L10.666 6.01794C9.90406 5.33661 8.91013 4.97291 7.88837 5.00155C6.86662 5.03019 5.89462 5.44899 5.17202 6.17194C4.45628 6.88764 4.03848 7.84808 4.00285 8.85964C3.96722 9.8712 4.31641 10.8587 4.98002 11.6229L12 18.6539L19.02 11.6239C19.6844 10.8593 20.0339 9.87118 19.9981 8.85891C19.9623 7.84665 19.5438 6.88566 18.827 6.16994Z" fill="#121212"/>
+																</svg>
+															</span>
+															<span class="add-wishlist-txt ml-1">{{ 'layout.wishlist.add_to_wishlist' | t }}</span>
+														</span>
+                  </a>
+                {% endif %}
+              {% else %}
+                <a href="{{ routes.account_login_url }}" class="wishlist_btn wishlist_login link-icon icon-svg">
+														<span class="wishlist-icon">
+															<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+																<path d="M12.001 4.52894C13.1436 3.50614 14.6345 2.95981 16.1674 3.00221C17.7003 3.04462 19.1587 3.67254 20.243 4.75694C21.3264 5.84013 21.9543 7.29669 21.9982 8.82803C22.0421 10.3594 21.4986 11.8495 20.479 12.9929L11.999 21.4849L3.52102 12.9929C2.50028 11.8489 1.95623 10.3575 2.00056 8.82492C2.04489 7.29235 2.67425 5.83489 3.75942 4.75177C4.84459 3.66865 6.30323 3.04205 7.83589 3.00061C9.36854 2.95917 10.8589 3.50604 12.001 4.52894ZM18.827 6.16994C18.1046 5.44807 17.1333 5.03002 16.1125 5.00157C15.0916 4.97312 14.0985 5.33642 13.337 6.01694L12.002 7.21494L10.666 6.01794C9.90406 5.33661 8.91013 4.97291 7.88837 5.00155C6.86662 5.03019 5.89462 5.44899 5.17202 6.17194C4.45628 6.88764 4.03848 7.84808 4.00285 8.85964C3.96722 9.8712 4.31641 10.8587 4.98002 11.6229L12 18.6539L19.02 11.6239C19.6844 10.8593 20.0339 9.87118 19.9981 8.85891C19.9623 7.84665 19.5438 6.88566 18.827 6.16994Z" fill="#121212"/>
+															</svg>
+														</span>
+                  <span class="wishlist-txt ml-1">{{ 'layout.wishlist.add_to_wishlist' | t }}</span>
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+          
+          {% if p_item.show_notify_button %}
+            <span class="link notify_btn" id="notify_trigger_button">
+				<svg width="23" height="23" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path fill-rule="evenodd" clip-rule="evenodd" d="M9.24243 13.7576L0.593892 9.91379C-0.233734 9.54595 -0.185159 8.35531 0.66968 8.05612L20.6488 1.06342C20.6778 1.05258 20.7071 1.04313 20.7368 1.03507C21.1026 0.933522 21.4556 1.0491 21.6953 1.28127C21.6993 1.2851 21.7032 1.28896 21.7071 1.29287C21.7114 1.29715 21.7156 1.30146 21.7198 1.30579C21.9512 1.54546 22.0663 1.89783 21.965 2.26291C21.9569 2.2927 21.9474 2.32219 21.9366 2.35127L14.9439 22.3303C14.6447 23.1852 13.4541 23.2337 13.0862 22.4061L9.24243 13.7576ZM17.1943 4.39145L3.71111 9.11058L9.77856 11.8072L17.1943 4.39145ZM11.1928 13.2214L18.6086 5.80566L13.8894 19.2889L11.1928 13.2214Z" />
+					</svg>
+              {{ 'layout.product.notify_button' | t }}
+				</span>
+          {% endif %}
+        </div>
+      {% endif %}
+      
+      <div class="single_product_list">
+        
+        {% if p_item.show_sku %}
+          <p class="single_product__sku mr-2">
+            <b>{{ 'layout.product.sku' | t }}:</b>
+            <span id="single_product__sku-{{ section.id }}"></span>
+          </p>
+        {% endif %}
+        
+        
+        {% if p_item.show_vendor %}
+          <p class="single_product__vendor">
+            <b>{{ 'layout.product.vendor' | t }}:</b>
+            <span>{{ product.vendor }}</span>
+          </p>
+        {% endif %}
+        
+        {% if p_item.show_product_types %}
+          <p class="single_product__type">
+            <b>{{ 'layout.product.product_type' | t }}:</b>
+            
+            <span>
+												{% if product.type.size > 0 %}
+                                                  {{ product.type }}
+                                                {% else %}
+                                                  —
+                                                {% endif %}
+											</span>
+          </p>
+        {% endif %}
+        
+        {% if p_item.show_barcode %}
+          <p class="single_product__barcode">
+            <b>{{ 'layout.product.barcode' | t }}:</b>
+            <span id="single_product__barcode-{{ section.id }}"></span>
+          </p>
+        {% endif %}
+        
+        {% if p_item.show_weight %}
+          <p class="single_product__weight">
+            <b>{{ 'layout.product.weight' | t }}:</b>
+            <span id="single_product__weight-{{ section.id }}"></span>
+          </p>
+        {% endif %}
+        
+        {% if p_item.show_tags %}
+          <p class="single_product__tags">
+            <b>{{ 'layout.product.tags' | t }}:</b>
+            {% if product.tags.size > 0 %}
+              <span>{{ product.tags | first }}</span>{% for tag in product.tags offset:1 %}, <span>{{ tag }}</span>{% endfor %}
+            {% else %}
+              —
+            {% endif %}
+          </p>
+        {% endif %}
+        
+        {% if p_item.show_collections %}
+          <p class="single_product__collections">
+            <b>{{ 'layout.product.collections' | t }}:</b>
+            {% if product.collections.size > 0 %}
+              <a href="{{ product.collections.first.url }}">{{ product.collections.first.title }}</a>{% for collection in product.collections offset:1 %}, <a href="{{ collection.url }}">{{ collection.title }}</a>{% endfor %}
+            {% else %}
+              —
+            {% endif %}
+          </p>
+        {% endif %}
+      </div>
+    </div>
+  </form>
+  
+  {% if p_item.show_notify_button %}
+    <div id="product_notify" class="container container-sm">
+      {% form 'contact', class: 'notify_form' %}
+      {{ form.errors | default_errors }}
+      
+      <p class="h5 text-center mb-2 mt-3">{{ 'layout.product.notify_text' | t }}</p>
+      
+      <input type="hidden" name="contact[tags]" value="Notify product">
+      <label for="product_notify_input" class="hidden">Body</label>
+      <input id="product_notify_input" type="hidden" name="contact[product]" value="{{ shop.url }}{{ product.url }}">
+      <div class="form_wrapper">
+        <input  required type="email" name="contact[email]" class="notify__input form-control" placeholder="Enter your email">
+        <textarea required name="contact[comment]" class="notify__input form-control" placeholder="Add your comment about the product of interest to you"></textarea>
+        <button class="btn btn-primary w-100 mt-3" type="submit">{{ 'layout.product.notify_send' | t }}</button>
+      </div>
+      
+      {% endform %}
+    </div>
+  {% endif %}
+  
+  {% if p_item.show_share_buttons %}
+    <div class="product-social-sharing mt-4">
+      <div class="rte">
+        {%- assign product_image = product.featured_image -%}
+        {%- include 'widget-social-sharing', share_title: product.title, share_link: product.url, share_image: product_image -%}
+      </div>
+    </div>
+  {% endif %}
+  
+  {% if p_item.show_policy %}
+    <div class="single_product__policy">
+      {% if p_item.delivery_page.size > 0 %}
+        <a class="item_policy__link" href="{{ p_item.delivery_page }}">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.72375 13.5C6.63459 14.1257 6.32266 14.6983 5.84526 15.1125C5.36786 15.5267 4.75704 15.7547 4.125 15.7547C3.49296 15.7547 2.88214 15.5267 2.40474 15.1125C1.92734 14.6983 1.61541 14.1257 1.52625 13.5H0.75V4.5C0.75 4.30109 0.829018 4.11032 0.96967 3.96967C1.11032 3.82902 1.30109 3.75 1.5 3.75H12C12.1989 3.75 12.3897 3.82902 12.5303 3.96967C12.671 4.11032 12.75 4.30109 12.75 4.5V6H15L17.25 9.042V13.5H15.7238C15.6346 14.1257 15.3227 14.6983 14.8453 15.1125C14.3679 15.5267 13.757 15.7547 13.125 15.7547C12.493 15.7547 11.8821 15.5267 11.4047 15.1125C10.9273 14.6983 10.6154 14.1257 10.5262 13.5H6.72375ZM11.25 5.25H2.25V11.2875C2.54592 10.9854 2.91045 10.7593 3.31256 10.6283C3.71468 10.4974 4.14247 10.4656 4.55953 10.5355C4.9766 10.6055 5.37058 10.7752 5.70796 11.0302C6.04533 11.2852 6.31611 11.6179 6.49725 12H10.7528C10.8787 11.7352 11.0475 11.4945 11.25 11.2875V5.25ZM12.75 9.75H15.75V9.53625L14.244 7.5H12.75V9.75ZM13.125 14.25C13.4235 14.25 13.7097 14.1314 13.9208 13.9204C14.1318 13.7093 14.2504 13.4231 14.2504 13.1246C14.2504 12.8262 14.1318 12.5399 13.9208 12.3289C13.7097 12.1178 13.4235 11.9992 13.125 11.9992C12.8265 11.9992 12.5403 12.1178 12.3292 12.3289C12.1182 12.5399 11.9996 12.8262 11.9996 13.1246C11.9996 13.4231 12.1182 13.7093 12.3292 13.9204C12.5403 14.1314 12.8265 14.25 13.125 14.25ZM5.25 13.125C5.25 12.9773 5.2209 12.831 5.16436 12.6945C5.10783 12.558 5.02496 12.434 4.9205 12.3295C4.81603 12.225 4.69201 12.1422 4.55552 12.0856C4.41903 12.0291 4.27274 12 4.125 12C3.97726 12 3.83097 12.0291 3.69448 12.0856C3.55799 12.1422 3.43397 12.225 3.3295 12.3295C3.22504 12.434 3.14217 12.558 3.08564 12.6945C3.0291 12.831 3 12.9773 3 13.125C3 13.4234 3.11853 13.7095 3.3295 13.9205C3.54048 14.1315 3.82663 14.25 4.125 14.25C4.42337 14.25 4.70952 14.1315 4.9205 13.9205C5.13147 13.7095 5.25 13.4234 5.25 13.125Z" fill="#121212"/>
+          </svg>
+          {{ p_item.delivery_text }}
+        </a>
+      {% endif %}
+      {% if p_item.return_page.size > 0 %}
+        <a class="item_policy__link"  href="{{ p_item.return_page }}">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.75 10.5H8.25C7.0197 10.4995 5.81267 10.8354 4.75941 11.4712C3.70614 12.107 2.8467 13.0186 2.274 14.1075C2.2579 13.9054 2.2499 13.7027 2.25 13.5C2.25 9.35775 5.60775 6 9.75 6V1.875L17.625 8.25L9.75 14.625V10.5ZM8.25 9H11.25V11.481L15.2408 8.25L11.25 5.019V7.5H9.75C8.88769 7.49903 8.03534 7.68436 7.25129 8.04332C6.46724 8.40227 5.76999 8.92637 5.20725 9.57975C6.17574 9.19591 7.20822 8.99919 8.25 9Z" fill="#121212"/>
+          </svg>
+          {{ p_item.return_text }}
+        </a>
+      {% endif %}
+      {% if p_item.security_page.size > 0 %}
+        <a class="item_policy__link" href="{{ p_item.security_page }}">
+          <svg width="16" height="16" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9.3,0.1c0.5-0.2,1-0.2,1.4,0l6,2.3c0.8,0.3,1.3,1,1.3,1.9v4.5c0,2.5-0.5,4.6-1.4,6.4c-1.3,2.2-3.4,3.8-6.3,4.7 C10.1,20,9.9,20,9.7,20c-2.9-0.9-5-2.5-6.3-4.7C2.5,13.5,2,11.4,2,8.8V4.4c0-0.8,0.5-1.6,1.3-1.9L9.3,0.1z M5.2,14.2 c0.9,1.7,2.2,2.8,4.2,3.5c0.4,0.1,0.8,0.1,1.2,0c2-0.7,3.3-1.9,4.2-3.5c0.8-1.4,1.2-3.1,1.2-5.4V5.8c0-0.8-0.5-1.6-1.3-1.9l-4-1.5 c-0.5-0.2-1-0.2-1.4,0l-4,1.5C4.5,4.2,4,5,4,5.8v3.1C4,11.1,4.4,12.8,5.2,14.2z"/>
+          </svg>
+          {{ p_item.security_text }}
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>

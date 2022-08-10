@@ -1,0 +1,36 @@
+<div>
+  {{ section.settings.html_block }}
+</div>
+
+{% schema %}
+{
+"name": "New HTML Section",
+"class": "new-html-section",
+"tag": "section",
+"settings": [
+{
+"type": "header",
+"content": "Settings"
+},
+{
+"type": "html",
+"id": "html_block",
+"label": "HTML"
+}
+
+],
+"presets": [
+{
+"name": "New HTML Section",
+"category":"Custom",
+"settings": {
+}
+}
+]
+
+}
+{% endschema %}
+
+
+{% javascript %}
+{% endjavascript %}

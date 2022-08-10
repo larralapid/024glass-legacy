@@ -1,0 +1,197 @@
+{% case section.settings.img_size %}
+	{% when 'small'  %}{%- assign img_size = '1170x500' -%}{%- assign img_min_size = '215x200' -%}
+	{% when 'medium' %}{%- assign img_size = '1170x600' -%}{%- assign img_min_size = '200x300' -%}
+	{% when 'large'  %}{%- assign img_size = '1170x700' -%}{%- assign img_min_size = '320x200' -%}
+{% endcase %}
+
+
+{% if section.settings.background_toggle %}
+	<div style="background-color: {{ section.settings.bg_color }}" class="bg-section">
+{% endif %}
+
+{% if section.settings.container_view %}
+	<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'container-xl' %}container-xxl{% endif %}">
+{% endif %}
+		
+<style>
+	
+	{% case section.settings.img_size %}
+	
+	{% when 'small'  %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(500 / 1170 * 100%);
+	}
+	
+	{% when 'medium' %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(600 / 1170 * 100%);
+	}
+	
+	{% when 'large'  %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(700 / 1170 * 100%);
+	}
+	
+	{% endcase %}
+	
+</style>
+		
+	<div class="row">
+		
+		<div class="item_txt col-12">
+			<div class="row align-items-center">
+				<div class="col-12 col-md-6">
+					{% if section.settings.heading.size > 0 %}
+						<div class="h2 heading mb-md-0">{{ section.settings.heading }}</div>
+					{% endif %}
+				</div>
+				<div class="col-12 col-md-6">
+					{% if section.settings.subheading.size > 0 %}
+						<p class="subtitle_lg mt-0" style="color: {{ settings.color_black }}">{{ section.settings.subheading }}</p>
+					{% endif %}
+					{% if section.settings.text.size > 0 %}
+						<div class="subtext">{{ section.settings.text }}</div>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+			<div class="item_img col-12 mt-5">
+				{% if section.settings.image.size > 0 %}
+					<img class="blur-up img-fluid lazyload"
+						 src="{{ section.settings.image | img_url: img_min_size, crop: section.settings.img_alignment }}"
+						 alt="{{ section.settings.image.alt }}"
+						 data-src="{{ section.settings.image | img_url: img_size, crop: section.settings.img_alignment }}"/>
+				{% else %}
+					<div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }}">
+						{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+					</div>
+				{% endif %}
+			</div>
+			
+		</div>
+
+{% if section.settings.container_view %}
+	</div>
+{% endif %}
+
+{% if section.settings.background_toggle %}
+	</div>
+{% endif %}
+
+
+{% schema %}
+{
+	"name": "Image with text",
+	"class": "section section_homepage section_image-with-text section_image-with-text-column",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "background_toggle",
+			"label": "Show background color",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "bg_color",
+			"label": "Background color",
+			"default": "#F6F7F9"
+		},
+		{
+			"type": "checkbox",
+			"id": "container_view",
+			"label": "Use container",
+			"default":   false
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+			{
+				"value": "container",
+				"label": "Container"
+			},
+			{
+				"value": "container-xl",
+				"label": "Container xl"
+			}
+		],
+			"default":   "container",
+			"info":      "If use container"
+		},
+
+
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		},
+		
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "small",
+					"label": "Small (1170x500)"
+				},
+				{
+					"value": "medium",
+					"label": "Medium (1170x600)"
+				},
+				{
+					"value": "large",
+					"label": "Large (1170x700)"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+		{
+			"type": "richtext",
+			"id": "heading",
+			"label": "Heading"
+		},
+
+		{
+			"type": "text",
+			"id": "subheading",
+			"label": "Subheading"
+		},
+		{
+			"type": "textarea",
+			"id": "text",
+			"label": "Text"
+		}
+	],
+
+	"presets": [
+		{
+			"name": " Image with text",
+			"category": "Image"
+		}
+	]
+}
+{% endschema %}
+
+
+
+

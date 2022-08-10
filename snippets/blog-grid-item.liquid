@@ -1,0 +1,50 @@
+<article class="article_item">
+    <div class="article_image">
+      {% if article.image %}
+          <img class="blur-up w-100 lazyload img-fluid" src="{{ article.image.src | img_url: '100x100', crop: item.img_alignment }}" data-src="{{ article.image.src | img_url: '370x230', crop: item.img_alignment }}" alt="{{ article.image.alt | escape }}">
+      {% else %}
+        <img class="lazyload w-100 img-fluid" src="{{ 'no_image.png' | asset_img_url: '120x100', crop: 'center' }}" data-src="{{ 'no_image.png' | asset_img_url: '370x230', crop: 'center' }}" alt="{{ article.image.alt | escape }}">
+      {% endif %}
+    </div>
+    <div class="article_caption">
+      {%- if item.blog_show_info -%}
+        <div class="article_info">
+          {%- if item.blog_show_date -%}
+            <span class="d-flex align-items-center">
+                    <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                      {{ article.published_at | date: '%b %d, %Y' }}
+                    </time>
+                     <span class="divider">&#124;</span>
+                  </span>
+      
+          {%- endif -%}
+      
+          {%- if article.tags.size > 0 and item.blog_show_tags -%}
+            {%- for tag in article.tags limit:3 -%}
+           
+              <a class="d-flex align-items-center" href="{{ blog.url }}/tagged/{{ tag | handle }}">
+                {{ tag }}
+                <span class="divider">&#124;</span>
+              </a>
+            
+            {%- endfor -%}
+          {%- endif -%}
+      
+          {%- if blog.comments_enabled? and item.show_comments -%}
+            <span class="post-comments">
+			    	<span class="comments_count">{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+                  </span>
+          {%- endif -%}
+      
+          {%- if item.blog_show_author -%}
+            <span class="d-flex align-items-center ml-auto">{{ 'blog.articles.by_author' | t }} <em>{{ article.author }}</em> </span>
+          {%- endif -%}
+    
+        </div>
+      {%- endif -%}
+      <h5 class="article_title mb-1">
+        <a href="{{ article.url }}">{{ article.title  | truncate: 50 }}</a>
+      </h5>
+      <a class="link link-primary mt-2" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+    </div>
+</article>

@@ -1,0 +1,364 @@
+{% assign p_item = section.settings %}
+
+{% assign product_image = true %}
+{% if product.images.size == 0 %}
+	{% assign product_image = false %}
+{% endif %}
+
+{%- assign productJSON = product | json -%}
+
+{%- for var in product.variants -%}
+	{%- assign varIDold = '"id":' | append: var.id | append:',' -%}
+	{%- assign varQ = '"inventory_quantity":' | append: var.inventory_quantity | append:',' -%}
+	{%- assign varIDnew = varIDold | append: varQ -%}
+	
+	{%- if productJSONnew.size > 0 -%}
+		{%- assign productJSONnew = productJSONnew | replace: varIDold, varIDnew -%}
+	{%- else -%}
+		{%- assign productJSONnew = productJSON | replace: varIDold, varIDnew -%}
+	{%- endif -%}
+{%- endfor -%}
+
+{% unless product == empty %}
+<script type="application/json" id="product_json_{{ section.id }}">{{ productJSONnew }}</script>
+{% endunless %}
+
+<script type="application/json" id="variant_weights_{{ section.id }}">{% raw %}{{% endraw %}{% for variant in product.variants %}{% if forloop.last %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}"{% else %}"{{ variant.id }}":"{{ variant.weight | weight_with_unit: variant.weight_unit }}",{% endif %}{% endfor %}{% raw %}}{% endraw %}</script>
+
+
+<div itemscope itemtype="http://schema.org/Product" class="product-scope type_{{ p_item.product_view_type }}">
+	<meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
+	<meta itemprop="image" content="{{ product.featured_image.src | product_img_url: 'grande' }}" />
+	<div class="single-product-wrapper">
+		<div class="row{% if p_item.product_view_type == 'carousel-vertical' %} align-items-start{% endif %}">
+			
+			{% include 'product-image-gallery' %}
+			
+			<div class="single_product__info col-12 {{ product_info_class }}">
+				
+				{% include 'product-descr' %}
+				
+				{% case p_item.product_description_type %}
+				{% when 'dropdown-content'  %}
+				{% include 'product-tabs-vertical' %}
+				{% endcase %}
+			</div>
+		</div>
+	</div>
+	{% case p_item.product_description_type %}
+	{% when 'tab-content'  %}
+		{% include 'product-tabs-horizontal' %}
+	{% endcase %}
+</div>
+
+
+{% if p_item.show_related_products %}
+	{% include 'product-related' %}
+{% endif %}
+
+
+{% include 'product-script' %}
+
+{% schema %}
+{
+	"name": "Product template #4",
+	"class": "section section_single-product section_product section_template__product",
+	"max_blocks": 30,
+	"settings": [
+
+		// VIEW
+		{
+			"type": "header",
+			"content": "Product"
+		},
+		{
+			"type": "select",
+			"id": "product_view_type",
+			"label": "View type",
+			"options": [
+				{
+					"value": "carousel-vertical",
+					"label": "Carousel Vertical"
+				},
+				{
+					"value": "carousel-horizontal",
+					"label": "Carousel Horizontal"
+				},
+				{
+					"value": "sticky",
+					"label": "Sticky"
+				},
+				{
+					"value": "tile",
+					"label": "Tile"
+				},
+				{
+					"value": "carousel_big",
+					"label": "Big img carousel"
+				}
+			],
+			"default": "tile"
+		},
+		{
+			"type": "select",
+			"id": "product_description_type",
+			"label": "Description type",
+			"options": [
+				{
+					"value": "tab-content",
+					"label": "Tab content"
+				},
+				{
+					"value": "dropdown-content",
+					"label": "Dropdown content"
+				}
+			],
+			"default": "dropdown-content"
+		},
+
+
+		// IMAGES
+		{
+			"type": "header",
+			"content": "Images"
+		},
+		{
+			"type": "select",
+			"id": "image_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+
+		// SETTINGS
+		{
+			"type": "header",
+			"content": "Settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_sku",
+			"label": "Show SKU"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_short_desc",
+			"label": "Show Short description"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_color",
+			"label": "Show color options"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_size",
+			"label": "Show size options"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_size_chart",
+			"label": "Show size chart options"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_vendor",
+			"label": "Show vendor"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_product_types",
+			"label": "Show product types"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_barcode",
+			"label": "Show barcode"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_weight",
+			"label": "Show weight"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_tags",
+			"label": "Show tags"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_collections",
+			"label": "Show collections"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_share_buttons",
+			"label": "Show social sharing buttons"
+		},
+
+		{
+			"type": "checkbox",
+			"id": "show_notify_button",
+			"label": "Show notify button",
+			"info": "Allow to send applications in case the goods are not available."
+		},
+		{
+			"type": "header",
+			"content": "Policy block"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_policy",
+			"label": "Show Policy"
+		},
+		{
+			"type": "url",
+			"id": "security_page",
+			"label": "Security policy page"
+		},
+		{
+			"type": "text",
+			"id": "security_text",
+			"label": "Security policy link text",
+			"default": "Security policy"
+		},
+		{
+			"type": "url",
+			"id": "delivery_page",
+			"label": "Delivery policy page"
+		},
+		{
+			"type": "text",
+			"id": "delivery_text",
+			"label": "Delivery policy link text",
+			"default": "Delivery policy"
+		},
+		{
+			"type": "url",
+			"id": "return_page",
+			"label": "Return policy page"
+		},
+		{
+			"type": "text",
+			"id": "return_text",
+			"label": "Return policy link text",
+			"default": "Return policy"
+		},
+		{
+			"type": "header",
+			"content": "Related products"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_related_products",
+			"label": "Show Related products"
+		}
+	],
+	"blocks": [
+		// FOR ALL PRODUCT =================================================================================
+		{
+			"type": "all_tab",
+			"name": "Content for all product",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content"
+				}
+			]
+		},
+
+		// REVIEWS =========================================================================================
+		{
+			"type": "reviews",
+			"name": "Product reviews",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Product reviews",
+					"info": "You need to install the application and enable display in : Theme settings/Product/Product Reviews"
+				}
+			]
+		},
+
+		// FOR PRODUCT =====================================================================================
+		{
+			"type": "product_tab",
+			"name": "Content for product",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+				{
+					"type": "product",
+					"id": "custom_product",
+					"label": "Product",
+					"info": "Content will only be shown on this product."
+				},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content"
+				}
+			]
+		},
+
+		// FOR COLLECTIONS ====================================================================================
+		{
+			"type": "collection_tab",
+			"name": "Content for collection",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Tab title",
+					"default": "Tab title"
+				},
+				{
+					"type": "collection",
+					"id": "custom_collection",
+					"label": "Collection",
+					"info": "Content will only be shown on products from this collection."
+				},
+				{
+					"type": "page",
+					"id": "page",
+					"label": "Page",
+					"info": "Select a page with content."
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+
+
+

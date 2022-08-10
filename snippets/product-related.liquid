@@ -1,0 +1,76 @@
+{% if collection and collection.products_count > 1 %}
+	{% if collection == null or collection.handle == 'frontpage' or collection.handle == 'all' %}
+		
+		{% assign found_a_collection = false %}
+		{% for c in product.collections %}
+			{% if found_a_collection == false and c.handle != 'frontpage' and c.handle != 'all' and c.all_products_count > 1 %}
+				{% assign found_a_collection = true %}
+				{% assign collection = c %}
+			{% endif %}
+		{% endfor %}
+	{% endif %}
+	
+	<div class="widget_related_products">
+		<h3 class="section_heading swiper-title mb-3">
+			<span>{{ 'layout.product.related_product' | t }}</span>
+		</h3>
+		<div class="related_products_carousel product_listing__main product_listing__grid swiper-container text-center">
+			<div class="swiper-wrapper">
+				{% assign current_product_title = product.title %}
+				{% assign current_product_found = true %}
+				 
+				{% for prod in collection.products limit:7 %}
+					{% if prod.title == current_product_title %}
+						{% assign current_product_found = false %}
+					{% endif %}
+					
+					{% unless prod.title == current_product_title %}
+						{% unless forloop.last and current_product_found %}
+							{% assign product = prod %}
+							<div class="swiper-slide product product__{% cycle 'counter': '1','2','3','4','5','6' %}">
+								{% include 'product-item-simple' img_alignment: p_item.image_alignment %}
+							</div>
+						{% endunless %}
+					{% endunless %}
+				{% endfor %}
+			</div>
+			<div class="swiper-pagination"></div>
+			<div class="swiper-button-prev"></div>
+			<div class="swiper-button-next"></div>
+		</div>
+	</div>
+{% endif %}
+<script type="text/javascript">
+	jQuery(document).ready(function($) {
+	// RELATED PRODUCT CAROUSEL INIT
+      
+			var productRelatedSlider = new Swiper( '.related_products_carousel', {
+				effect: 'slide',
+				slidesPerView: 2,
+				spaceBetween: 10,
+				speed: 500,
+				pagination: {
+					el:  $('.widget_related_products .swiper-pagination'),
+					dynamicBullets: true,
+					clickable: true
+				},
+				navigation: {
+					nextEl: $('.widget_related_products .swiper-button-next'),
+					prevEl: $('.widget_related_products .swiper-button-prev')
+				},
+				breakpoints: {
+					400: {
+						spaceBetween: 15,
+						slidesPerView: 3
+					},
+					768: {
+						spaceBetween: 30,
+						slidesPerView: 4
+					}
+				}
+			});
+		                                                                                                                              
+	});
+</script>
+
+                                    

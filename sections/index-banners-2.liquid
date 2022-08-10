@@ -1,0 +1,868 @@
+{% if section.settings.container_view %}
+	<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'container-xl' %}container container-xxl{% endif %}">
+{% endif %}
+
+{% if section.settings.section_title.size > 0 %}
+	<h2 class="section_heading"><span>{{ section.settings.section_title }}</span></h2>
+{% endif %}
+
+<div class="row {% if section.settings.reset_indent %} mx-0{% endif %} {% unless section.settings.container_view %} full_width {% endunless %}">
+	{% for block in section.blocks %}
+		{% case block.type %}
+			{% when 'banner_100' %}
+				{%- assign item_class = 'col-12' -%}
+				{%- assign img_min_size = '300x154' -%}
+				{%- assign img_size = 'x600' -%}
+			{% when 'banner_66' %}
+				{%- assign item_class = 'col-12 col-sm-8' -%}
+				{%- assign img_min_size = '200x114' -%}
+				{%- assign img_size = '770x437' -%}
+			{% when 'banner_50' %}
+				{%- assign item_class = 'col-12 col-md-6' -%}
+				{%- assign img_min_size = '150x151' -%}
+				{% if section.settings.container_settings == 'container' and section.settings.container_view and block.settings.banner_style == 'overlay' %}
+					{%- assign img_size = '570x500' -%}
+				{% elsif section.settings.container_settings == 'container' and section.settings.container_view and block.settings.banner_style == 'standard' %}
+					{%- assign img_size = '570x400' -%}
+				{% elsif section.settings.container_settings == 'container-xl' and section.settings.container_view and block.settings.banner_style == 'overlay' and section.settings.reset_indent %}
+					{%- assign img_size = '930x929' -%}
+				{% else %}
+					{%- assign img_size = '960x462' -%}
+				{% endif %}
+			{% when 'banner_33' %}
+				{%- assign item_class = 'col-12 col-sm-6 col-md-4' -%}
+				{%- assign img_min_size = '100x57' -%}
+				{% if section.settings.container_settings == 'container' and section.settings.container_view %}
+					{%- assign img_size = '370x230' -%}
+				{% elsif section.settings.container_settings == 'container-xl' and section.settings.container_view %}
+					{%- assign img_size = '610x470' -%}
+				{% else %}
+					{%- assign img_size = '640x500' -%}
+				{% endif %}
+		{% endcase %}
+
+		<div class="{{ item_class }} {{ block.type }} {{ block.settings.custom_class }} {% if section.settings.reset_indent %} px-0{% endif %} ">
+			<div class="banner-item style-{{ block.settings.banner_style }} {% if block.settings.inverted %} inverted{% endif %}">
+				{% if block.settings.item_img.size > 0 %}
+					<img class="banner-image lazyload img-fluid blur-up" src="{{ block.settings.item_img | img_url: img_min_size, crop: 'center' }}" alt="{{ block.settings.image.alt }}"
+						 data-srcset="{{ block.settings.item_img | img_url: img_size, crop: 'center' }} 1200w,
+							 {{ block.settings.item_img | img_url: '960x440', crop: 'center' }} 960w,
+							 {{ block.settings.item_img | img_url: '960x440', crop: 'center' }} 720w,
+							 {{ block.settings.item_img | img_url: '960x440', crop: 'center' }} 540w
+							">
+				{% else %}
+					<div class="img_placeholder__wrap">
+						{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+					</div>
+				{% endif %}
+				{% if block.settings.item_subtitle_1.size > 0 or block.settings.item_title_1.size > 0 or block.settings.item_text_1.size > 0 or block.settings.item_link.size > 0 %}
+					<div class="banner-caption d-flex flex-column justify-content-{{ block.settings.banner_vposition }} align-items-{{ block.settings.banner_hposition }} {% if block.settings.inverted %} inverted{% endif %}">
+							<div class="caption_text {% if block.settings.banner_hposition == 'center' %} text-center{% endif %}">
+								{% if block.settings.item_subtitle_1.size > 0 %}
+									<div class="h4">{{ block.settings.item_subtitle_1 }}</div>
+								{% endif %}
+								{% if block.settings.item_title_1.size > 0 %}
+									<div class="h1 mb-0">{{ block.settings.item_title_1 }}</div>
+								{% endif %}
+								{% if block.settings.item_text_1.size > 0 %}
+									<p class="text-banner mb-0">{{ block.settings.item_text_1 }}</p>
+								{% endif %}
+								
+								{% unless block.settings.link_type_banner %}
+									{% if block.settings.link_text.size > 0 and block.settings.item_link.size > 0 %}
+										<a href="{{ block.settings.item_link }}" class="btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}">{{ block.settings.link_text }}</a>
+									{% endif %}
+								{% endunless %}
+								{% if block.settings.link_type_banner and block.settings.item_link.size > 0 %}
+										<a href="{{ block.settings.item_link }}" class="link_abs"></a>
+									{% if  block.settings.item_link.size > 0 and block.settings.link_text.size > 0 %}
+										<span  class="btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}">{{ block.settings.link_text }}</span>
+									{% endif %}
+								{% endif %}
+							</div>
+					</div>
+				{% endif %}
+			</div>
+		</div>
+	{% endfor %}
+</div>
+
+{% if section.settings.container_view %}
+	</div>
+{% endif %}
+{% schema %}
+
+{
+	"name": "Banners #2",
+	"class": "section section_homepage section_banners",
+	"max_blocks": 6,
+	"settings": [
+		{
+			"type": "header",
+			"content": "Banners"
+		},
+		{
+			"type": "text",
+			"id": "section_title",
+			"label": "Section Title"
+		},
+		{
+			"type": "checkbox",
+			"id": "container_view",
+			"label": "Use container",
+			"default":   false
+		},
+		{
+			"type": "checkbox",
+			"id": "reset_indent",
+			"label": "Remove indent",
+			"default":   false
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Container"
+				},
+				{
+					"value": "container-xl",
+					"label": "Container xl"
+				}
+			],
+			"default":   "container",
+			"info":      "If use container"
+		}
+	],
+	"blocks": [
+
+		// Banner 100%
+		{
+			"type": "banner_100",
+			"name": "Banner (100%)",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standard",
+					"options": [
+						{
+							"label": "Standard",
+							"value": "standard"
+						},
+						{
+							"label": "Overlay",
+							"value": "overlay"
+						}
+					]
+				},
+
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				},
+
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Caption settings"
+				},
+
+				{
+					"type": "select",
+					"id": "banner_hposition",
+					"label": "Banner horizontal position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Right position",
+							"value": "end"
+						},
+						{
+							"label": "Left position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						}
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "banner_vposition",
+					"label": "Banner vertical position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Top position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Bottom position",
+							"value": "end"
+						}
+					]
+				},
+	
+				{
+					"type": "richtext",
+					"id": "item_title_1",
+					"label": "Caption title"
+				},
+				{
+					"type": "richtext",
+					"id": "item_subtitle_1",
+					"label": "Caption subtitle"
+				},
+				{
+					"type": "text",
+					"id": "item_text_1",
+					"label": "Caption text #1"
+				},
+
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text",
+					"default": "Shop now"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "link_type_banner",
+					"label": "Link banner",
+					"default": false
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Button settings"
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-md",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		},
+
+
+		// Banner 66%
+		{
+			"type": "banner_66",
+			"name": "Banner (66%)",
+			"limit": 1,
+			"settings": [
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standard",
+					"options": [
+						{
+							"label": "Standard",
+							"value": "standard"
+						},
+						{
+							"label": "Overlay",
+							"value": "overlay"
+						}
+					]
+				},
+
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				},
+
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Caption settings"
+				},
+
+				{
+					"type": "select",
+					"id": "banner_hposition",
+					"label": "Banner horizontal position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Right position",
+							"value": "end"
+						},
+						{
+							"label": "Left position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						}
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "banner_vposition",
+					"label": "Banner vertical position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Top position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Bottom position",
+							"value": "end"
+						}
+					]
+				},
+	
+				{
+					"type": "richtext",
+					"id": "item_title_1",
+					"label": "Caption title"
+				},
+				{
+					"type": "richtext",
+					"id": "item_subtitle_1",
+					"label": "Caption subtitle"
+				},
+				{
+					"type": "text",
+					"id": "item_text_1",
+					"label": "Caption text #1"
+				},
+
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "link_type_banner",
+					"label": "Link banner",
+					"default": false
+				},
+
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text",
+					"default": "Shop now"
+				},
+
+
+				{
+					"type": "paragraph",
+					"content": "Button settings"
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-md",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		},
+
+
+		// Banner 50%
+		{
+			"type": "banner_50",
+			"name": "Banner (50%)",
+			"limit": 2,
+			"settings": [
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standard",
+					"options": [
+						{
+							"label": "Standard",
+							"value": "standard"
+						},
+						{
+							"label": "Overlay",
+							"value": "overlay"
+						}
+					]
+				},
+
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				},
+
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Caption settings"
+				},
+
+				{
+					"type": "select",
+					"id": "banner_hposition",
+					"label": "Banner horizontal position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Right position",
+							"value": "end"
+						},
+						{
+							"label": "Left position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						}
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "banner_vposition",
+					"label": "Banner vertical position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Top position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Bottom position",
+							"value": "end"
+						}
+					]
+				},
+	
+				{
+					"type": "richtext",
+					"id": "item_title_1",
+					"label": "Caption title"
+				},
+				{
+					"type": "richtext",
+					"id": "item_subtitle_1",
+					"label": "Caption subtitle"
+				},
+				{
+					"type": "text",
+					"id": "item_text_1",
+					"label": "Caption text #1"
+				},
+
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "link_type_banner",
+					"label": "Link banner",
+					"default": false
+				},
+
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text",
+					"default": "Shop now"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Button settings"
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-md",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		},
+
+
+		// Banner 33%
+		{
+			"type": "banner_33",
+			"name": "Banner (33%)",
+			"limit": 6,
+			"settings": [
+				{
+					"type": "select",
+					"id": "banner_style",
+					"label": "Banner style",
+					"default": "standard",
+					"options": [
+						{
+							"label": "Standard",
+							"value": "standard"
+						},
+						{
+							"label": "Overlay",
+							"value": "overlay"
+						}
+					]
+				},
+
+				{
+					"type": "checkbox",
+					"id": "inverted",
+					"label": "Inverted",
+					"default": false
+				},
+
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Banner image"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Caption settings"
+				},
+
+				{
+					"type": "select",
+					"id": "banner_hposition",
+					"label": "Banner horizontal position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Right position",
+							"value": "end"
+						},
+						{
+							"label": "Left position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						}
+					]
+				},
+
+				{
+					"type": "select",
+					"id": "banner_vposition",
+					"label": "Banner vertical position",
+					"default": "start",
+					"options": [
+						{
+							"label": "Top position",
+							"value": "start"
+						},
+						{
+							"label": "Center position",
+							"value": "center"
+						},
+						{
+							"label": "Bottom position",
+							"value": "end"
+						}
+					]
+				},
+	
+				{
+					"type": "richtext",
+					"id": "item_title_1",
+					"label": "Caption title"
+				},
+				{
+					"type": "richtext",
+					"id": "item_subtitle_1",
+					"label": "Caption subtitle"
+				},
+				{
+					"type": "text",
+					"id": "item_text_1",
+					"label": "Caption text #1"
+				},
+
+				{
+					"type": "url",
+					"id": "item_link",
+					"label": "Link banner",
+					"info": "Optional"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "link_type_banner",
+					"label": "Link banner",
+					"default": false
+				},
+
+				{
+					"type": "text",
+					"id": "link_text",
+					"label": "Link text",
+					"default": "Shop now"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Button settings"
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-md",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "custom_class",
+					"label": "Custom class"
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Banners #2",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "banner_50"
+				},
+				{
+					"type": "banner_50"
+				}
+			]
+		}
+	]
+}
+{% endschema %}

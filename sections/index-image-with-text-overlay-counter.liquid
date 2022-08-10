@@ -1,0 +1,531 @@
+
+{% if section.settings.section_view == 'full_width' %}
+   {% case section.settings.section_height %}
+   {% when 'small' %}{%- assign img_size = '2048x500' -%}
+   {% when 'medium' %}{%- assign img_size = '2048x588' -%}
+   {% when 'large' %}{%- assign img_size = '2048x1111' -%}
+   {% endcase %}
+   {% elsif section.settings.section_view == 'container_big' %}
+   {% case section.settings.section_height %}
+   {% when 'small' %}{%- assign img_size = '1810x442' -%}
+   {% when 'medium' %}{%- assign img_size = '1810x600' -%}
+   {% when 'large' %}{%- assign img_size = '1810x982' -%}
+   {% endcase %}
+ {% else %}
+   {% case section.settings.section_height %}
+   {% when 'small' %}{%- assign img_size = '1170x286' -%}
+   {% when 'medium' %}{%- assign img_size = '1170x820' -%}
+   {% when 'large' %}{%- assign img_size = '1170x457' -%}
+   {% endcase %}
+ {% endif %}
+
+{% if section.settings.section_view == 'boxed' %}
+<div class="container">
+  {% elsif section.settings.section_view == 'container_big' %}
+  <div class="container_big">
+    {% endif %}
+    
+    <div class="section_wrap flexible_block__{{ section.settings.section_height }}">
+      {% if section.settings.image.size > 0 %}
+        <div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}" style="background-image: url( {{ section.settings.image | img_url: img_size, crop: section.settings.img_alignment }} );"></div>
+        {% else %}
+        <div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}">
+          {{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+        </div>
+      {% endif %}
+      
+      <div class="section_txt align_{{ section.settings.caption_align }} {% if section.settings.section_view == 'full_width' or section.settings.section_view == 'boxed' %}{{ section.settings.section_view }}{% else %}container{% endif %}">
+        <div class="caption_text {% if section.settings.inverted %}inverted{% endif %}" {% if section.settings.caption_bg_color.size > 0 %}style="background-color: {{ section.settings.caption_bg_color | color_modify: 'alpha', section.settings.caption_bg_color_opacity }}"{% endif %}>
+     
+          {% for block in section.blocks %}
+            
+            {% if block.settings.subtitle.size > 0 %}
+              <p class="text">{{ block.settings.subtitle }}</p>
+            {% endif %}
+            
+            {% if block.settings.subtitle_h3.size > 0 %}
+              <h3>{{ block.settings.subtitle_h3 }}</h3>
+            {% endif %}
+  
+            {% if block.settings.title.size > 0 %}
+              <div class="h2">{{ block.settings.title }}</div>
+            {% endif %}
+  
+            {% if block.settings.text.size > 0 %}
+              <p class="text">{{ block.settings.text }}</p>
+            {% endif %}
+            
+            {% if block.settings.subsubtitle.size > 0 %}
+              <h5>{{ block.settings.subsubtitle }}</h5>
+            {% endif %}
+            
+            {% if block.type == 'timer' %}
+              <div class="timer">
+                <div class="countdown_timer" id="timer_{{ forloop.index }}_{{ section.id }}" data-day="{{ block.settings.countdown_date_day }}" data-month="{{ block.settings.countdown_date_month }}" data-year="{{ block.settings.countdown_date_year }}">
+                  <p class="countdown_days">
+                    <input class="days">
+                    <span>{{ 'layout.countdown.days' | t }}</span>
+                  </p>
+                  <p class="countdown_hours">
+                    <input class="hour">
+                    <span>{{ 'layout.countdown.hours' | t }}</span>
+                  </p>
+                  <p class="countdown_minuts">
+                    <input class="minute">
+                    <span>{{ 'layout.countdown.minutes' | t }}</span>
+                  </p>
+                  <p class="countdown_seconds">
+                    <input class="second">
+                    <span>{{ 'layout.countdown.seconds' | t }}</span>
+                  </p>
+                </div>
+              </div>
+            {% endif %}
+            
+            {% if block.settings.button_label.size > 0 and block.settings.button_link.size > 0 %}
+              <a href="{{ block.settings.button_link }}" class="btn btn-primary btn-md">{{ block.settings.button_label }}</a>
+            {% endif %}
+            
+          {% endfor %}
+     
+        </div>
+      </div>
+    </div>
+    
+    {% if section.settings.section_view == 'boxed' or section.settings.section_view == 'container_big' %}
+  </div>
+  {% endif %}
+  
+  {% schema %}
+  {
+  "name": "Image with text overlay",
+  "class": "section section_homepage section_image-with-text-overlay iwto_counter",
+  "max_blocks": 6,
+  "settings": [
+      {
+      "type": "select",
+      "id": "section_height",
+      "label": "Section height",
+      "default": "medium",
+        "options": [
+          {
+            "label": "Small",
+            "value": "small"
+          },
+          {
+            "label": "Medium",
+            "value": "medium"
+          },
+          {
+            "label": "Large",
+            "value": "large"
+          }
+        ]
+      },
+    {
+      "type": "select",
+      "id": "section_view",
+      "label": "Section view",
+      "default": "boxed",
+        "options": [
+          {
+            "label": "Boxed",
+            "value": "boxed"
+          },
+          {
+            "label": "Big container",
+            "value": "container_big"
+          },
+          {
+            "label": "Full width",
+            "value": "full_width"
+          }
+      ]
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "The image should be more than 2048px wide to resize and crop properly"
+    },
+  
+    {
+      "type": "select",
+      "id": "img_alignment",
+      "label": "Image alignment",
+      "info": "It only works if the parallax is disabled",
+      "options": [
+        {
+          "value": "top",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Middle"
+        },
+        {
+          "value": "bottom",
+          "label": "Bottom"
+        }
+      ]
+    },
+    
+      {
+        "type": "select",
+        "id": "caption_align",
+        "label": "Caption align",
+        "default": "center",
+          "options": [
+            {
+              "label": "Center",
+              "value": "center"
+            },
+            {
+             "label": "Right",
+             "value": "right"
+            },
+            {
+             "label": "Left",
+             "value": "left"
+            }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "inverted",
+        "label": "Inverted",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "caption_bg_color",
+        "label": "Caption background"
+      },
+      {
+        "type": "range",
+        "id": "caption_bg_color_opacity",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "px",
+        "label": "Background opacity",
+        "default": 0.5
+      }
+    ],
+    "blocks": [
+    
+    // HEADER H2 //////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "header_h2",
+    "name": "Header h2",
+    "settings": [
+    {
+    "type": "richtext",
+    "id": "title",
+    "label": "Heading",
+    "default": "<p>Main Heading</p>"
+    }
+    ]
+    },
+    
+    // HEADER H3 //////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "header_h3",
+    "name": "Header h3",
+    "settings": [
+    {
+    "type": "text",
+    "id": "subtitle_h3",
+    "label": "Sub heading h3",
+    "default": "h3 text"
+    }
+    ]
+    },
+    
+    
+    // HEADER H4 //////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "header_h4",
+    "name": "Header h4",
+    "settings": [
+    {
+    "type": "text",
+    "id": "subtitle",
+    "label": "Sub heading",
+    "default": "with text overlay"
+    }
+    ]
+    },
+    
+    // HEADER H5 //////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "header_h5",
+    "name": "Header h5",
+    "settings": [
+    {
+    "type": "text",
+    "id": "subsubtitle",
+    "label": "Sub heading"
+    }
+    ]
+    },
+    
+    // TEXT //////////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "text",
+    "name": "Text",
+    "settings": [
+    {
+    "type": "textarea",
+    "id": "text",
+    "label": "Text",
+    "default": "Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story."
+    }
+    ]
+    },
+    
+    // BUTTON //////////////////////////////////////////////////////////////////////////////////////////////
+    {
+    "type": "button",
+    "name": "Button",
+    "settings": [
+    {
+    "type": "text",
+    "id": "button_label",
+    "label": "Button label"
+    },
+    {
+    "type": "url",
+    "id": "button_link",
+    "label": "Button link"
+    }
+    ]
+    },
+    
+    // TIMER //////////////////////////////////////////////////////////////////////////////////////////////
+    {
+      "type": "timer",
+      "name": "Timer",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Countdown date"
+        },
+        {
+          "type": "select",
+          "id": "countdown_date_day",
+          "label": "Day",
+          "options": [
+            {
+            "value": "1",
+            "label": "1"
+            },
+            {
+            "value": "2",
+            "label": "2"
+            },
+            {
+            "value": "3",
+            "label": "3"
+            },
+            {
+            "value": "4",
+            "label": "4"
+            },
+            {
+            "value": "5",
+            "label": "5"
+            },
+            {
+            "value": "6",
+            "label": "6"
+            },
+            {
+            "value": "7",
+            "label": "7"
+            },
+            {
+            "value": "8",
+            "label": "8"
+            },
+            {
+            "value": "9",
+            "label": "9"
+            },
+            {
+            "value": "10",
+            "label": "10"
+            },
+            {
+            "value": "11",
+            "label": "11"
+            },
+            {
+            "value": "12",
+            "label": "12"
+            },
+            {
+            "value": "13",
+            "label": "13"
+            },
+            {
+            "value": "14",
+            "label": "14"
+            },
+            {
+            "value": "15",
+            "label": "15"
+            },
+            {
+            "value": "16",
+            "label": "16"
+            },
+            {
+            "value": "17",
+            "label": "17"
+            },
+            {
+            "value": "18",
+            "label": "18"
+            },
+            {
+            "value": "19",
+            "label": "19"
+            },
+            {
+            "value": "20",
+            "label": "20"
+            },
+            {
+            "value": "21",
+            "label": "21"
+            },
+            {
+            "value": "22",
+            "label": "22"
+            },
+            {
+            "value": "23",
+            "label": "23"
+            },
+            {
+            "value": "24",
+            "label": "24"
+            },
+            {
+            "value": "25",
+            "label": "25"
+            },
+            {
+            "value": "26",
+            "label": "26"
+            },
+            {
+            "value": "27",
+            "label": "27"
+            },
+            {
+            "value": "28",
+            "label": "28"
+            },
+            {
+            "value": "29",
+            "label": "29"
+            },
+            {
+            "value": "30",
+            "label": "30"
+            },
+            {
+              "value": "31",
+              "label": "31"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "id": "countdown_date_month",
+          "label": "Month",
+          "options": [
+            {
+            "value": "01",
+            "label": "January"
+            },
+            {
+            "value": "02",
+            "label": "February"
+            },
+            {
+            "value": "03",
+            "label": "March"
+            },
+            {
+            "value": "04",
+            "label": "April"
+            },
+            {
+            "value": "05",
+            "label": "May"
+            },
+            {
+            "value": "06",
+            "label": "June"
+            },
+            {
+            "value": "07",
+            "label": "July"
+            },
+            {
+            "value": "08",
+            "label": "August"
+            },
+            {
+            "value": "09",
+            "label": "September"
+            },
+            {
+            "value": "10",
+            "label": "October"
+            },
+            {
+            "value": "11",
+            "label": "November"
+            },
+            {
+            "value": "12",
+            "label": "December"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "countdown_date_year",
+          "label": "Year"
+        }
+      ]
+     }
+    ],
+    "presets": [
+      {
+        "name": "Image with text overlay counter",
+        "category": "Image"
+      }
+    ]
+  }
+{% endschema %}
+  
+{% javascript %}
+  jQuery(document).ready(function($) {
+    $('.countdown_timer').each(function(i) {
+      var timerId = '#' + $(this).attr('id');
+      var countdownDay = $(this).data('day');
+      var countdownMonth = $(this).data('month');
+      var countdownYear = $(this).data('year');
+      
+      $( timerId ).ccountdown(countdownYear, countdownMonth, countdownDay,'00:00');
+    });
+  });
+  
+  
+  
+{% endjavascript %}

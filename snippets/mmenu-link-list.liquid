@@ -1,0 +1,73 @@
+{% if blm_it.links.size > 0 %}
+	<ul class="level_2 is-simplemenu item_{{ block.type }}" id="menu_{{ block.id }}" style="display: none;">
+		<li class="link js-back_link d-xl-none">
+			<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.8283 12L15.7783 7.05L14.3643 5.636L8.00032 12L14.3643 18.364L15.7783 16.95L10.8283 12Z" fill="#797B7E"/></svg>
+			<span>{{ 'layout.header.back' | t }}</span>
+		</li>
+		<li class="level_1__item d-xl-none">
+			{% if blm_it.link.size > 0 %}
+				<a class="level_1__link" href="{{ blm_it.link }}">
+			{% else %}
+				<span class="level_1__link">
+			{% endif %}
+					<span class="link_text">{{ blm_it.title }}</span>
+			{% if blm_it.link.size > 0 %}
+				</a>
+			{% else %}
+				</span>
+			{% endif %}
+		</li>
+		
+		{%- assign links_small = blm_it.links -%}
+		{% for link in linklists[links_small].links %}
+			{%- assign child_list_handle = link.title | handleize -%}
+			
+			{%- assign link_count = 0 -%}
+			{% for childlink in linklists[child_list_handle].links %}
+				{%- assign link_count = link_count | plus: 1 -%}
+			{% endfor %}
+			
+			<li class="level_2__item {% if link_count > 0 %}with_ul{% endif %}">
+				<a class="level_2__link" href="{{ link.url }}">{{ link.title }}
+					{% if link_count > 0 %}
+						<span  class="level_2__trigger megamenu_trigger" data-submenu="submenu_{{ block.id }}-{{ forloop.index }}">
+							<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.71205 11.1367L0.863525 10.2882L5.43926 5.71245L0.863525 1.13672L1.71205 0.288191L7.13632 5.71245L1.71205 11.1367Z"/></svg>
+						</span>
+					{% endif %}
+				</a>
+				
+				{% if link_count > 0 %}
+					<ul class="level_3 droped_linklist" id="submenu_{{ block.id }}-{{ forloop.index }}" style="display: none;">
+						{% for childlink in linklists[child_list_handle].links %}
+							{%- assign child_list_2_handle = childlink.title | handleize -%}
+							
+							{%- assign link_count = 0 -%}
+							{% for childlink in linklists[child_list_2_handle].links %}
+								{%- assign link_count = link_count | plus: 1 -%}
+							{% endfor %}
+							
+							<li class="level_3_item {% if link_count > 0 %}with_ul{% endif %}">
+								<a class="level_3_link" href="{{ childlink.url }}">{{ childlink.title }}
+									{% if link_count > 0 %}
+										<span class="level_2__trigger megamenu_trigger" data-submenu="subsubmenu_{{ block.id }}-{{ forloop.index }}">
+											<svg width="8" height="12" viewBox="0 0 8 12" xmlns="http://www.w3.org/2000/svg" ><path fill-rule="evenodd" clip-rule="evenodd" d="M1.71205 11.1367L0.863525 10.2882L5.43926 5.71245L0.863525 1.13672L1.71205 0.288191L7.13632 5.71245L1.71205 11.1367Z"/></svg>
+										</span>
+									{% endif %}
+								</a>
+								{% if link_count > 0 %}
+									<ul class="level_3_1 droped_linklist" id="subsubmenu_{{ block.id }}-{{ forloop.index }}" style="display: none;">
+										{% for childlink in linklists[child_list_2_handle].links %}
+											<li class="level_3_1_item">
+												<a class="level_3_1_link" href="{{ childlink.url }}">{{ childlink.title }}</a>
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
+							</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}

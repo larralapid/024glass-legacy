@@ -1,0 +1,295 @@
+{% case section.settings.collections_layout %}
+	{% when 'full_width'  %}
+		{%- assign item_size = '600x790' -%}
+	{% when 'container'  %}
+		{%- assign item_size = '370x489' -%}
+{% endcase %}
+ 
+{%- assign img_alignment = section.settings.img_alignment -%}
+
+
+
+<div class="collection_listing_wrap{% if section.settings.collections_layout == 'container' %} container{% endif %} {{ section.settings.style }}">
+
+	<div class="row{% if section.settings.show_carousel %}{% else %} collection_listing__main collection_listing_size_{{ section.settings.collections_layout }}{% endif %}">
+		
+		<div class="{% if section.settings.style == 'type_1' %}col-md-4 {% elsif section.settings.style == 'type_2' %} text-center mb-4{% endif %} col-12">
+			{% if section.settings.item_heading.size > 0 %}
+				<div class="{% if section.settings.style == 'type_1' %}h2{% else %} h4 mb-1{% endif %}">
+					{{ section.settings.item_heading  }}
+				</div>
+			{% endif %}
+			
+			{% if section.settings.item_text.size > 0 %}
+				<div class="{% if section.settings.style == 'type_1' %}text{% else %} subtext{% endif %}">
+					{{ section.settings.item_text }}
+				</div>
+			{% endif %}
+			{% if section.settings.show_view_all %}
+				<div class="view_all__wrap col-12 px-0 mt-3">
+					<a href="/collections/" class="link link-primary">{{ 'layout.collection_listing.view_link' | t }}</a>
+				</div>
+			{% endif %}
+		</div>
+		
+		
+	{% if section.settings.show_carousel %}
+		<div class="container">
+		<div class="swiper-container collection-carousel" id="collection-carousel_{{ section.id }}">
+			<div class="swiper-wrapper collection_listing__main collection_listing_size_{{ section.settings.collections_layout }}">
+	{% endif %}
+				
+		{% for block in section.blocks %}
+			
+			{% assign collection = collections[block.settings.item_collection] %}
+			{% assign collection_image = false %}
+			{% assign collection_title = false %}
+			
+			{% if block.settings.item_img %}
+				{% assign collection_image = true %}
+				{% assign collection_image_src = block.settings.item_img %}
+			{% endif %}
+			
+			{% if collection_image %}
+				{% capture collection_img_url %}{{ collection_image_src | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+				{% capture collection_img_min_url %}{{ collection_image_src | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+				{% elsif collection.image %}
+				{% capture collection_img_url %}{{ collection | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+				{% capture collection_img_min_url %}{{ collection | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+				{% elsif collection.products.first %}
+				{% assign iteration_count = collection.products_count | minus:1 %}
+				
+				{% for i in (0..iteration_count) %}
+					{% if collection.products[i].images.size > 0 %}
+						{% capture collection_img_url %}{{ collection.products[i].images.first | img_url: item_size, crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+						{% capture collection_img_min_url %}{{ collection.products[i].images.first | img_url: '100x100', crop: img_alignment, format: 'pjpg' }}{% endcapture %}
+						
+						{% break %}
+					{% else %}
+						{% assign collection_img_url = 0 %}
+					{% endif %}
+				{% endfor %}
+			{% else %}
+				{% assign collection_img_url = 0 %}
+			{% endif %}
+			
+			<div class="{% if section.settings.show_carousel %}swiper-slide{% else %}col-xl-auto col-md-4 col-12{% endif %}">
+				
+				<a class="collection_item" href="{{ collection.url }}">
+					<div class="collection_img">
+						{% if collection_img_url == 0 %}
+							<div class="img_placeholder__wrap">{{ 'collection-1' | placeholder_svg_tag }}</div>
+						{% else %}
+							<img class="blur-up lazyload img-fluid w-100 img-fluid" src="{{ collection_img_min_url }}" data-src="{{ collection_img_url }}" alt="{{ collection.title }}">
+						{% endif %}
+					</div>
+					
+					<div class="collection_caption{% if block.settings.position-caption == 'top' %} position-top{% else %} position-bottom{% endif %}{% if section.settings.show_items_count %} collection_caption_full{% endif %}{% if block.settings.custom_collection_class %} {{ block.settings.custom_collection_class }}{% endif %}">
+						<h6 class="collection_title mb-0">{{ collection.title }}</h6>
+						{% if section.settings.show_items_count %}
+							<span class="items_count">{{collection.all_products_count}} {{ collection.all_products_count| pluralize: ' product', ' products' }}</span>
+						{% endif %}
+					</div>
+				</a>
+			</div>
+		{% endfor %}
+
+		{% if section.settings.show_carousel %}
+			</div>
+			<div id="prev_{{ section.id }}" class="swiper-button-prev"></div>
+			<div id="next_{{ section.id }}" class="swiper-button-next"></div>
+		</div>
+		</div>
+	{% endif %}
+	</div>
+</div>
+{% schema %} 
+{
+	"name": "Collection list",
+	"class": "section section_homepage section_collection-list",
+	"max_blocks": 12,
+	"settings": [
+		{
+			"type": "select",
+			"id": "collections_layout",
+			"label": "Collections layout",
+				"options": [
+				{
+					"label": "Full width",
+					"value": "full_width"
+				},
+				{
+					"label": "Container",
+					"value": "container"
+				}
+			],
+			"default": "container"
+		},
+
+		{
+			"type": "richtext",
+			"id": "item_heading",
+			"label": "Collections heading",
+			"default": "<p>Collections heading</p>"
+		},
+		{
+			"type": "text",
+			"id": "item_text",
+			"label": "Collections subheading",
+			"default": "Collections subheading"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_items_count",
+			"label": "Show items count"
+		},
+
+		{
+			"type": "select",
+			"id": "style",
+			"label": "Item style",
+			"options": [
+				{
+					"value": "type_1",
+					"label": "Style 1"
+				},
+				{
+					"value": "type_2",
+					"label": "Style 2"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+		{
+			"type": "checkbox",
+			"id": "show_view_all",
+			"label": "Show 'View all' button"
+		},
+		{
+			"type": "checkbox",
+			"id": "show_carousel",
+			"label": "Collection in carousel",
+			"info": "Min 4 collections"
+		}
+	],
+	"blocks": [
+		{
+			"type": "featured_collection",
+			"name": "Collection",
+			"settings": [
+				{
+					"label": "Collection",
+					"id": "item_collection",
+					"type": "collection"
+				},
+
+				{
+					"type": "paragraph",
+					"content": "Position Caption"
+				},
+
+				{
+				"type":      "select",
+				"id":        "position-caption",
+				"label":     "Position caption",
+					"options": [
+						{
+							"value": "top",
+							"label": "Top"
+						},
+						{
+							"value": "bottom",
+							"label": "Bottom"
+						}
+					],
+					"default":   "bottom"
+				},
+
+				{
+					"type": "image_picker",
+					"id": "item_img",
+					"label": "Custom Collection image"
+				},
+				{
+					"type": "text",
+					"id": "custom_collection_class",
+					"label": "Custom collection class"
+				}
+
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Collection list",
+			"category": "Collections",
+			"blocks": [
+				{
+					"type": "featured_collection"
+				},
+				{
+					"type": "featured_collection"
+				},
+				{
+					"type": "featured_collection"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+
+{% javascript %}
+jQuery(document).ready(function($) {
+	
+	$('.collection-carousel').each(function(i) {
+
+		var sliderId = '#' + $(this).attr('id');
+
+		var collectionSwiper = new Swiper( sliderId, {
+			speed: 500,
+			direction: 'horizontal',
+			slidesPerView: 1,
+            spaceBetween: 10,
+			navigation: {
+				nextEl: $(this).find('.swiper-button-next'),
+				prevEl: $(this).find('.swiper-button-prev')
+			},
+            breakpoints: {
+                576: {
+                    slidesPerView: 2,
+					spaceBetween: 10
+                },
+                768: {
+                    slidesPerView: 2,
+					spaceBetween: 20
+                },
+                1200: {
+                    slidesPerView: 3,
+					spaceBetween: 30
+                }
+            }
+			});
+		});
+});
+{% endjavascript %}

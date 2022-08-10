@@ -1,0 +1,13 @@
+{% case logo_t %}
+	{% when 'txt' %}
+		<a class="header_logo logo_text" href="{{ shop.url }}">{{ shop.name }} {{ slogan }}</a>
+	{% when 'img' %}
+		{% if logo_image.size > 0 %}
+			<a class="header_logo" href="{{ shop.url }}">
+				<img class="img-fluid" src="{{ src }}" alt="{{ shop.name }}" style="max-width: {{ max_w }}px">
+			</a>
+			{{ slogan }}
+		{% else %}
+			<a class="header_logo" href="{{ shop.url }}">{{ shop.name }} {{ slogan }}</a>
+		{% endif %}
+{% endcase %}

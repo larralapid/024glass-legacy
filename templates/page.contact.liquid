@@ -1,0 +1,35 @@
+<div class="template_contact">
+	<div class="page_heading custom_page_heading">
+		{% if page_title != blank %}
+			<p>{{ page_title }}</p>
+		{% endif %}
+	</div>
+	
+	<div class="container">
+	<div class="row">
+
+		<div class="col-12 col-lg-6">
+			{% section 'template-contact' %}
+		</div>
+		<div class="col-12 col-lg-6">
+			{% section 'template-contact-form' %}
+		</div>
+		
+		<div class="col-12">
+			{% if page.content.size > 0 %}
+				<div class="rte">
+					{{ page.content }}
+				</div>
+			{% endif %}
+		</div>
+
+	</div>
+	</div>
+  
+  <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d24678.47119525502!2d-84.278286!3d39.360564!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8840580e66afeef7%3A0x263d67ba2df21ce6!2s5212%20Kings%20Mills%20Rd%20%23420%2C%20Mason%2C%20OH%2045040!5e0!3m2!1sen!2sus!4v1642083296769!5m2!1sen!2sus" width="1400" height="380" style="border:0;" allowfullscreen="" loading="lazy" style="width:100%;"></iframe>
+
+	{%comment%}{% if settings.contact_map %}
+		{% section 'index-map' %}
+	{% endif %}{%endcomment%}
+</div>
+

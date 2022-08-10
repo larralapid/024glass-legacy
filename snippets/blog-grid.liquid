@@ -1,0 +1,14 @@
+<div class="blog_listing__main blog_listing__main_grid">
+    <div class="row">
+      {%- for article in blog.articles -%}
+      <div class="col-12 col-sm-6 col-lg-4 mb-3 mb-md-4">
+        {%- include 'blog-grid-item' -%}
+      </div>
+      {%- endfor -%}
+    </div>
+  
+	{%- if paginate.pages > 1 -%}
+        {% assign pagination_items = 'layout.pagination.articles' | t %}
+		{%- include 'snippet-pagination' with pagination_items -%}
+	{%- endif -%}
+</div>

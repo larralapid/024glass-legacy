@@ -1,0 +1,62 @@
+{% assign item = section.settings %}
+{% assign ajax_search = item.header_search_ajax %}
+
+<div class="header_search{% if ajax_search %} header_search-with-toggle{% endif %}">
+	{% if ajax_search %}
+		<div class="search_toggle">
+			<svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M18.031 16.617L22.314 20.899L20.899 22.314L16.617 18.031C15.0237 19.3082 13.042 20.0029 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20.0029 13.042 19.3082 15.0237 18.031 16.617ZM16.025 15.875C17.2941 14.5699 18.0029 12.8204 18 11C18 7.132 14.867 4 11 4C7.132 4 4 7.132 4 11C4 14.867 7.132 18 11 18C12.8204 18.0029 14.5699 17.2941 15.875 16.025L16.025 15.875Z" />
+			</svg>
+		</div>
+		
+	<div class="search_form_wrap focus">
+	{% endif %}
+	<div class="search_content_wrapper">
+		<form action="/search" method="get" role="search" class="search_form">
+			{% if ajax_search %}
+				<h6 class="search-caption subtitle d-md-block d-none">{{ 'layout.header.search_caption' | t }}</h6>
+			{% endif %}
+			<div class="group-wrapper">
+				<input class="form-control" type="search" name="q" placeholder="{{ 'layout.header.search' | t }}" aria-label="{{ 'layout.header.search' | t }}">
+
+				<label for="header_search_submit" class="icon-search">
+					<svg class="svg-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M18.031 16.617L22.314 20.899L20.899 22.314L16.617 18.031C15.0237 19.3082 13.042 20.0029 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20.0029 13.042 19.3082 15.0237 18.031 16.617ZM16.025 15.875C17.2941 14.5699 18.0029 12.8204 18 11C18 7.132 14.867 4 11 4C7.132 4 4 7.132 4 11C4 14.867 7.132 18 11 18C12.8204 18.0029 14.5699 17.2941 15.875 16.025L16.025 15.875Z" />
+					</svg>
+				</label>
+				
+				<input type="submit" id="header_search_submit" class="d-none" value="">
+				<label for="header_search_reset" class="icon-search-reset d-md-block d-none">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M17.7071 2.29289C18.0976 2.68342 18.0976 3.31658 17.7071 3.70711L11.4142 10L17.7071 16.2929C18.0976 16.6834 18.0976 17.3166 17.7071 17.7071C17.3166 18.0976 16.6834 18.0976 16.2929 17.7071L9.29289 10.7071C8.90237 10.3166 8.90237 9.68342 9.29289 9.29289L16.2929 2.29289C16.6834 1.90237 17.3166 1.90237 17.7071 2.29289Z"/><path d="M2.29289 2.29289C1.90237 2.68342 1.90237 3.31658 2.29289 3.70711L8.58579 10L2.29289 16.2929C1.90237 16.6834 1.90237 17.3166 2.29289 17.7071C2.68342 18.0976 3.31658 18.0976 3.70711 17.7071L10.7071 10.7071C11.0976 10.3166 11.0976 9.68342 10.7071 9.29289L3.70711 2.29289C3.31658 1.90237 2.68342 1.90237 2.29289 2.29289Z"/>
+					</svg>
+				</label>
+				<input type="reset"  id="header_search_reset" class="d-none">
+			</div>
+			{% if ajax_search %}
+				<div class="search_form_close">
+					<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M17.7071 2.29289C18.0976 2.68342 18.0976 3.31658 17.7071 3.70711L11.4142 10L17.7071 16.2929C18.0976 16.6834 18.0976 17.3166 17.7071 17.7071C17.3166 18.0976 16.6834 18.0976 16.2929 17.7071L9.29289 10.7071C8.90237 10.3166 8.90237 9.68342 9.29289 9.29289L16.2929 2.29289C16.6834 1.90237 17.3166 1.90237 17.7071 2.29289Z"/><path d="M2.29289 2.29289C1.90237 2.68342 1.90237 3.31658 2.29289 3.70711L8.58579 10L2.29289 16.2929C1.90237 16.6834 1.90237 17.3166 2.29289 17.7071C2.68342 18.0976 3.31658 18.0976 3.70711 17.7071L10.7071 10.7071C11.0976 10.3166 11.0976 9.68342 10.7071 9.29289L3.70711 2.29289C3.31658 1.90237 2.68342 1.90237 2.29289 2.29289Z"/>
+					</svg>
+				</div>
+			{% endif %}
+		</form>
+
+		{% if ajax_search %}
+			<script>
+				theme.searchAjaxOn = true;
+			</script>
+
+			<div id="search_result_container"></div>
+		{% else %}
+			<script>
+				theme.searchAjaxOn = false;
+			</script>
+		{% endif %}
+	</div>
+
+	{% if ajax_search %}
+		</div>
+		<div class="search_form_overlay"></div>
+	{% endif %}
+</div>

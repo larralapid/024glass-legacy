@@ -1,0 +1,225 @@
+<style>
+  #gallery_big-template-product .swiper-slide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f2f3f5;
+    height: 480px;
+  }
+  #gallery_big-template-product .swiper-slide img {
+    max-width: 100%;
+    width: auto !important;
+    max-height: 480px;
+  }
+</style>
+{% case p_item.product_view_type %}
+{% when 'carousel-vertical'  %}
+{%- assign product_info_class = 'col-lg-7' -%}
+<div class="single_product__img col-12 col-md-8 offset-md-1 offset-lg-0 col-lg-5 mb-4 mb-lg-0">
+  {% if product.images.size > 1 %}
+  <a  id="btnImgGallery" class="product__img_zoom">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 7H22V9H16V3H18V7ZM8 9H2V7H6V3H8V9ZM18 17V21H16V15H22V17H18ZM8 15V21H6V17H2V15H8Z" fill="black"/>
+    </svg>
+  </a>
+  {% endif %}
+  {% case product.images.size %}
+  {% when 0 %}
+  <img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="">
+  {% when 1 %}
+  <img class="img-fluid" src="{{ product.featured_image.src | product_img_url: '480x480', crop: p_item.image_alignment }}" alt="{{ product.images.first.alt }}" >
+  {% else %}
+  <div class="gallery_big">
+    <div id="gallery_big-{{ section.id }}" class="swiper-container">
+      {% include 'snippet-badge' %}
+		<div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img class="img-fluid w-100" id="primary_img_{{ section.id }}" src="{{ product.images.first | product_img_url: '480x480', crop: p_item.image_alignment }}"  alt="{{ image.alt }}">
+        </div>
+
+        {% for image in product.images offset:1 %}
+        <div class="swiper-slide">
+          <img class="img-fluid w-100" src="{{ image.src | product_img_url: '480x480', crop: p_item.image_alignment }}" alt="{{ image.alt }}">
+        </div>
+        {% endfor %}
+      </div>
+      <div id="gallery_pagination-{{ section.id }}" class="swiper-pagination"></div>
+      <div id="prev_{{ section.id }}" class="swiper-button-prev"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+      <div id="next_{{ section.id }}" class="swiper-button-next"><span>{{ 'layout.pagination.next' | t }}</span></div>
+    </div>
+  </div>
+  <div id="gallery_thumbs-{{ section.id }}" class="gallery_thumbs swiper-container">
+    <div class="swiper-wrapper">
+      {% for image in product.images %}
+      <div class="swiper-slide">
+        <a class="fancybox image-gallery" rel="gallery" href="{{ image.src | product_img_url: '1000x1200', crop: p_item.image_alignment }}">
+          <img class="img-fluid" src="{{ image.src | product_img_url: '90x90', crop: p_item.image_alignment }}" alt="{{ image.alt }}">
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="swiper-nav-wrapper">
+    <div id="prev_gallery_thumbs_{{ section.id }}" class="swiper-button-prev">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M11.9992 8.99998L16.2422 13.243L14.8272 14.657L11.9992 11.828L9.17119 14.657L7.75619 13.243L11.9992 8.99998Z" fill="#BEC1C4"/>
+      </svg>
+    </div>
+    <div id="next_gallery_thumbs_{{ section.id }}" class="swiper-button-next">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12.0008 15L7.75781 10.757L9.17281 9.34302L12.0008 12.172L14.8288 9.34302L16.2438 10.757L12.0008 15Z" fill="#BEC1C4"/>
+      </svg>
+    </div>
+  </div>
+  {% endcase %}
+</div>
+
+{% when 'carousel-horizontal'  %}
+{%- assign product_info_class = 'col-lg-6' -%}
+<div class="single_product__img col-12 col-sm-8 offset-sm-1 offset-lg-0 col-lg-6 mb-4 mb-lg-0">
+  <div class="gallery_big">
+    {% include 'snippet-badge' %}
+    {% if product.images.size > 1 %}
+    <a  id="btnImgGallery" class="product__img_zoom">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18 7H22V9H16V3H18V7ZM8 9H2V7H6V3H8V9ZM18 17V21H16V15H22V17H18ZM8 15V21H6V17H2V15H8Z" fill="black"/>
+      </svg>
+    </a>
+    {% endif %}
+    {% case product.images.size %}
+    {% when 0 %}
+    <img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="" />
+    {% when 1 %}
+    <img class="img-fluid w-100" src="{{ product.featured_image.src | product_img_url: '640x779', crop: p_item.image_alignment }}" alt="{{ product.images.first.alt }}" >
+    {% else %}
+    <div id="gallery_big-{{ section.id }}" class="swiper-container">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide">
+          <img class="img-fluid w-100" id="primary_img_{{ section.id }}" src="{{ product.images.first | product_img_url: '600x779', crop: p_item.image_alignment }}" alt="{{ image.alt }}" >
+        </div>
+        {% for image in product.images offset:1 %}
+        <div class="swiper-slide">
+          <img class="img-fluid w-100" src="{{ image.src | product_img_url: '600x779', crop: p_item.image_alignment }}" alt="{{ image.alt }}" >
+        </div>
+        {% endfor %}
+      </div>
+      <div id="gallery_pagination-{{ section.id }}" class="swiper-pagination"></div>
+      <div id="prev_{{ section.id }}" class="swiper-button-prev"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+      <div id="next_{{ section.id }}" class="swiper-button-next"><span>{{ 'layout.pagination.next' | t }}</span></div>
+    </div>
+
+    <div id="gallery_thumbs-{{ section.id }}" class="gallery_thumbs swiper-container">
+      <div class="swiper-wrapper">
+        {% for image in product.images %}
+        <div class="swiper-slide">
+          <a class="fancybox image-gallery" rel="gallery" href="{{ image.src | product_img_url: '1000x1200', crop: p_item.image_alignment }}">
+            <img class="w-100 img-fluid" src="{{ image.src | product_img_url: '166x215', crop: p_item.image_alignment }}" alt="{{ image.alt }}" >
+          </a>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endcase %}
+  </div>
+</div>
+
+{% when 'sticky'  %}
+{%- assign product_info_class = 'col-lg-6 col-xl-5' -%}
+<div class="single_product__img col-12 col-lg-6 col-xl-7 mb-4 mb-md-0">
+  {% if product.images.size > 1 %}
+  <a  id="btnImgGalleryST" class="product__img_zoom">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M18 7H22V9H16V3H18V7ZM8 9H2V7H6V3H8V9ZM18 17V21H16V15H22V17H18ZM8 15V21H6V17H2V15H8Z" fill="black"/>
+    </svg>
+  </a>
+  {% endif %}
+  <div class="product-sticky-image">
+    {% case product.images.size %}
+    {% when 0 %}
+    <div class="product__img_wrap">
+      <img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="">
+    </div>
+    {% when 1 %}
+    <div class="product__img_wrap">
+      <img class="img-fluid lazyload"
+           src="{{ product.featured_image.src | product_img_url: '150x225', crop: p_item.image_alignment }}"
+           data-src="{{ product.featured_image.src | img_url: '640x775', crop: p_item.image_alignment }}"
+           alt="{{ product.featured_image.alt }}">
+    </div>
+    {% else %}
+    {% for image in product.images %}
+    <a class="fancybox product__img_wrap image-gallery col-6 col-sm-4 col-md-3 col-lg-12" rel="gallery" href="{{ image.src | product_img_url: '1000x1200', crop: p_item.image_alignment }}">
+      <img class="w-100 img-fluid" src="{{ image.src | product_img_url: '640x775', crop: p_item.image_alignment }}" alt="{{ image.alt }}" >
+    </a>
+    {% endfor %}
+    {% endcase %}
+  </div>
+</div>
+
+
+{% when 'tile'  %}
+{%- assign product_info_class = 'col-md-6 col-lg-5' -%}
+<div class="single_product__img col-12 col-md-6 col-lg-7">
+  {% if product.images.size > 1 %}
+  {% endif %}
+  <div class="product__img_wrap">
+    {% case product.images.size %}
+    {% when 0 %}
+    <div class="product__img_item">
+      <img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="">
+    </div>
+    {% when 1 %}
+    <div class="product__img_item">
+      <img class="img-fluid lazyload" src="{{ product.featured_image.src | product_img_url: '150x225', crop: p_item.image_alignment }}" data-src="{{ product.featured_image.src | img_url: '315x381', crop: p_item.image_alignment }}" alt="{{ product.featured_image.alt }}">
+    </div>
+    {% else %}
+    {% for image in product.images %}
+    <a class="product__img_item fancybox image-gallery" rel="gallery" href="{{ image.src | product_img_url: '1000x1200', crop: p_item.image_alignment }}">
+      <img class="w-100 img-fluid" src="{{ image.src | product_img_url: '315x381', crop: p_item.image_alignment }}" alt="{{ image.alt }}" >
+    </a>
+    {% endfor %}
+    {% endcase %}
+  </div>
+</div>
+
+{% when 'carousel_big'  %}
+{%- assign imagesNum = product.images.size -%}
+{%- assign imagesCount = product.images.size | plus: 0 -%}
+{%- assign product_info_class = 'container container-sm mt-3 text-center' -%}
+<div class="single_product__img col-12">
+  {% case product.images.size %}
+  {% when 0 %}
+  <img src="{{ 'no_image.png' | asset_url }}" alt="">
+  {% when 1 %}
+  <img  class="img-fluid w-100" src="{{ product.featured_image.src | product_img_url: '390x491', crop: p_item.image_alignment }}" alt="{{ product.images.first.alt }}" >
+  {% else %}
+
+  <div id="gallery_thumbs-{{ section.id }}" class="gallery_thumbs swiper-container">
+    <div class="swiper-wrapper">
+      <div class="swiper-slide">
+        <img class="img-fluid w-100"  id="primary_img_{{ section.id }}" src="{{ product.images.first | product_img_url: '390x491', crop: p_item.image_alignment }}" alt="{{ image.alt }}">
+      </div>
+
+      {% for image in product.images offset:1 %}
+      <div class="swiper-slide">
+        <img class="img-fluid w-100" src="{{ image.src | product_img_url: '390x491', crop: p_item.image_alignment }}" alt="{{ image.alt }}">
+      </div>
+      {% endfor %}
+    </div>
+    <div id="prev_{{ section.id }}" class="swiper-button-prev"><span>{{ 'layout.pagination.previous' | t }}</span></div>
+    <div id="next_{{ section.id }}" class="swiper-button-next"><span>{{ 'layout.pagination.next' | t }}</span></div>
+  </div>
+  <div class="gallery_big gallery_big_carousel">
+    <div id="gallery_big-{{ section.id }}" class="swiper-container">
+      <div class="swiper-wrapper">
+        {% for image in product.images %}
+        <div class="swiper-slide">
+          <img  class="img-fluid" src="{{ image.src | product_img_url: '390x491', crop: p_item.image_alignment }}" alt="{{ image.alt }}">
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endcase %}
+</div>
+{% endcase %}

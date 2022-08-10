@@ -1,0 +1,28 @@
+<div class="collection-information collection-information__fullwidth{% if cap_inverted_style %} inverted{% endif %}{% if  bg_collection_toggle or bg_img_collection %} collection_background{% endif %}{% if custom_class %} {{ custom_text_class }}{% endif %}"  style="{% if bg_collection %} background-color: {{ bg_color_collection }};{% endif %}{% if item.collection_image_toggle %}{% else %}{% if bg_img_collection %} background-image: url( {{ bg_img | img_url: '1200x450', crop: item.img_alignment }} ); {% endif %}{% endif %}" >
+  <div class="collection_info collection-type-default container{% if item.collection_image_toggle == false %} mt-0{% else %} mt-4 mt-md-6{% endif %}{% unless item.collection_image_toggle %}  text-center py-5 py-md-7{% endunless %}">
+    {% if collection.image or item.collection_desc_toggle and collection.description.size > 0 %}
+        <div class="row align-items-center">
+          {% if item.collection_image_toggle %}
+            {% if collection.image %}
+              <div class="collection_img col-12 col-md-2 d-none d-md-block">
+                <img class="lazyload img-fluid w-100" src="{{ col_img | img_url: col_img_min_size, crop: item.collection_img_alignment }}" alt="{{ collection.title }}" data-src="{{ col_img | img_url: col_img_size, crop: item.collection_img_alignment }}">
+              </div>
+            {% endif %}
+          {% endif %}
+          <h2 class="collection_title h3 {% unless item.collection_image_toggle %} col-12{% endunless %}">{{ collection.title }}</h2>
+          {% if item.collection_desc_toggle and collection.description.size > 0 %}
+            <div class="collection_text{% unless item.collection_image_toggle %} container-md{% endunless %}{% if collection.image and item.collection_image_toggle %} col-10{% endif %}">
+              <div class="collection_desc rte">
+                {{ collection.description | truncatewords: 100 }}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+ 
+    {% endif %}
+
+    {% if item.collection_tags_toggle  %}
+      {%- include 'filter-tags-img-or-lnk' -%}
+    {% endif %}
+  </div>
+</div>

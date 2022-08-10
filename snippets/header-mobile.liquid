@@ -1,0 +1,53 @@
+{% assign item = section.settings %}
+{% assign ajax_search = item.header_search_ajax %}
+
+<div class="header-top-mobile d-xl-none pt-2 pb-1 py-md-3 py-xl-0">
+	<div class="container">
+		<div class="row align-items-center">
+			<div class="col col-sm d-flex align-items-center pr-0">
+				<div id="megamenu_mobile_toggle" class="menu-toggle mr-1 mr-md-3" title="Menu">
+					<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path d="M3 5H21V7H3V5Z" />
+						<path d="M3 11H21V13H3V11Z" />
+						<path d="M3 17H21V19H3V17Z" />
+					</svg>
+				</div>
+				<div class="menu-content">
+					<div class="megamenu_mobile_close" style="display: none;">
+						<div class="close_icon">
+							<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17.7071 2.29289C18.0976 2.68342 18.0976 3.31658 17.7071 3.70711L11.4142 10L17.7071 16.2929C18.0976 16.6834 18.0976 17.3166 17.7071 17.7071C17.3166 18.0976 16.6834 18.0976 16.2929 17.7071L9.29289 10.7071C8.90237 10.3166 8.90237 9.68342 9.29289 9.29289L16.2929 2.29289C16.6834 1.90237 17.3166 1.90237 17.7071 2.29289Z"/><path d="M2.29289 2.29289C1.90237 2.68342 1.90237 3.31658 2.29289 3.70711L8.58579 10L2.29289 16.2929C1.90237 16.6834 1.90237 17.3166 2.29289 17.7071C2.68342 18.0976 3.31658 18.0976 3.70711 17.7071L10.7071 10.7071C11.0976 10.3166 11.0976 9.68342 10.7071 9.29289L3.70711 2.29289C3.31658 1.90237 2.68342 1.90237 2.29289 2.29289Z"/></svg>
+						</div>
+					</div>
+					<div class="mb-3" data-responsive-id="megamenu" data-responsive-layout="tablet mobile"></div>
+					
+					<div class="menu-items">
+						<div class="header_account mt-2" data-responsive-id="header-account" data-responsive-layout="tablet mobile"></div>
+						
+						<div class="header_wishlist mt-2" data-responsive-id="wishlist" data-responsive-layout="tablet mobile"></div>
+						<a class="cart_link d-flex align-items-center mt-2" href="/cart">
+							<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+								<path d="M7 8V6C7 4.67392 7.52678 3.40215 8.46447 2.46447C9.40215 1.52678 10.6739 1 12 1C13.3261 1 14.5979 1.52678 15.5355 2.46447C16.4732 3.40215 17 4.67392 17 6V8H20C20.2652 8 20.5196 8.10536 20.7071 8.29289C20.8946 8.48043 21 8.73478 21 9V21C21 21.2652 20.8946 21.5196 20.7071 21.7071C20.5196 21.8946 20.2652 22 20 22H4C3.73478 22 3.48043 21.8946 3.29289 21.7071C3.10536 21.5196 3 21.2652 3 21V9C3 8.73478 3.10536 8.48043 3.29289 8.29289C3.48043 8.10536 3.73478 8 4 8H7ZM7 10H5V20H19V10H17V12H15V10H9V12H7V10ZM9 8H15V6C15 5.20435 14.6839 4.44129 14.1213 3.87868C13.5587 3.31607 12.7956 3 12 3C11.2044 3 10.4413 3.31607 9.87868 3.87868C9.31607 4.44129 9 5.20435 9 6V8Z" fill="{{ settings.color_black }}"/>
+							</svg>
+							<span class="link_text ml-1">{{ 'layout.header.cart' | t }}</span>
+						</a>
+						<div class="header_currency" data-responsive-id="currency-selector" data-responsive-layout="tablet mobile"></div>
+					</div>
+				
+				
+				</div>
+				<div class="block-logo ml-2 ml-md-3" data-responsive-id="logo-shop" data-responsive-layout="tablet mobile"></div>
+			</div>
+			<div class="col-auto col-sm-auto d-flex align-items-center justofy-content-end">
+				{% if ajax_search %}
+					<div class="header_search ml-2 ml-md-3" data-responsive-id="header-search" data-responsive-layout="tablet mobile"></div>
+				{% endif %}
+				<div class="ml-2 ml-md-3" data-responsive-id="shopping-cart" data-responsive-layout="tablet mobile"></div>
+			</div>
+			{% if ajax_search == false %}
+				<div class="col-12">
+					<div class="header_search header_search_full mt-1 mt-md-2" data-responsive-id="header-search" data-responsive-layout="tablet mobile"></div>
+				</div>
+			{% endif %}
+		</div>
+	</div>
+</div>

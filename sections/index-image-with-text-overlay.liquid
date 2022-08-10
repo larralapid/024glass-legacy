@@ -1,0 +1,556 @@
+{% comment %}
+	For parallax downloading image must be more height container (.parallax_layer.img_placeholder__{{ section.settings.section_height }} > .flexible_block__{{ section.settings.section_height }} ).
+	Value accordingly set to padding-top css style below
+{% endcomment %}
+
+{% if section.settings.parallax %}
+	{% if section.settings.section_view == 'full_width' %}
+		{% case section.settings.section_height %}
+			{% when 'small' %}{%- assign img_size = '1920x1120' -%}
+			{% when 'medium' %}{%- assign img_size = '1920x1250' -%}
+			{% when 'large' %}{%- assign img_size = '1920x1360' -%}
+		{% endcase %}
+	{% else %}
+		{% case section.settings.section_height %}
+			{% when 'small' %}{%- assign img_size = '1170x500' -%}
+			{% when 'medium' %}{%- assign img_size = '1170x600' -%}
+			{% when 'large' %}{%- assign img_size = '1170x700' -%}
+		{% endcase %}
+	{% endif %}
+	<style>
+		{% case section.settings.section_height %}
+		{% when 'small'  %}
+		.section_image-with-text-overlay .parallax_layer.img_placeholder__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(1100 / 1920 * 100%);
+		}
+		.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(800 / 1920 * 100%);
+		}
+		
+		{% when 'medium' %}
+		.section_image-with-text-overlay .parallax_layer.img_placeholder__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(1250 / 1920 * 100%);
+		}
+		.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(930 / 1920 * 100%);
+		}
+		
+		
+		{% when 'large'  %}
+		.section_image-with-text-overlay .parallax_layer.img_placeholder__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(1360 / 1920 * 100%);
+		}
+		.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+			padding-top: calc(1110 / 1920 * 100%);
+		}
+		{% endcase %}
+		
+		@media (max-width: 1024px) {
+			
+			.section_image-with-text-overlay .parallax_layer.img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+			.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+				padding-top: 450px;
+			}
+		}
+	
+	</style>
+{% else %}
+	{% if section.settings.section_view == 'full_width' %}
+		{% case section.settings.section_height %}
+			{% when 'small' %}
+				{%- assign img_size = '1920x600' -%}
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(600 / 1920 * 100%);
+					}
+				</style>
+		
+			{% when 'medium' %}
+				{%- assign img_size = '1920x700' -%}
+				
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(700 / 1920 * 100%);
+					}
+				</style>
+			{% when 'large' %}
+				{%- assign img_size = '1920x930' -%}
+				
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(930 / 1920 * 100%);
+					}
+				
+				</style>
+		{% endcase %}
+	{% else %}
+		{% case section.settings.section_height %}
+			{% when 'small' %}
+				{%- assign img_size = '1170x500' -%}
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(500 / 1170 * 100%);
+					}
+				</style>
+		
+			{% when 'medium' %}
+				{%- assign img_size = '1170x600' -%}
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(600 / 1170 * 100%);
+					}
+				</style>
+			{% when 'large' %}
+				{%- assign img_size = '1170x700' -%}
+				<style>
+					.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+					.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+						padding-top: calc(700 / 1170 * 100%);
+					}
+				</style>
+		{% endcase %}
+	{% endif %}
+	
+	<style>
+		@media (max-width: 1024px) {
+			.section_image-with-text-overlay .img_placeholder__{{ section.settings.section_height }}_{{ section.id }},
+			.section_image-with-text-overlay .flexible_block__{{ section.settings.section_height }}_{{ section.id }} {
+				padding-top: 400px;
+			}
+		}
+	</style>
+{% endif %}
+
+
+
+
+{% if section.settings.section_view == 'boxed' %}
+	<div class="container">
+{% endif %}
+
+<div class="section_wrap flexible_block__{{ section.settings.section_height }}_{{ section.id }} {% if section.settings.parallax %}parallax_block{% endif %}">
+	{% if section.settings.image.size > 0 %}
+		<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}_{{ section.id }} {% if section.settings.parallax %}parallax_layer{% endif %}" style="background-image: url( {{ section.settings.image | img_url: img_size, crop: section.settings.img_alignment }} );"></div>
+	{% else %}
+		<div class="img_placeholder__wrap img_placeholder__{{ section.settings.section_height }}_{{ section.id }} {% if section.settings.parallax %}parallax_layer{% endif %}">
+			{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+		</div>
+	{% endif %}
+	
+
+	<div class="section_txt align_{{ section.settings.caption_align }} {{ section.settings.section_view }} {{ section.settings.custom_class }}">
+		<div class="container"> 
+			<div class="caption_text text-{{ section.settings.text_align }} {% if section.settings.inverted %} inverted{% endif %}" {% if section.settings.caption_bg_color.size > 0 %}style="background-color: {{ section.settings.caption_bg_color | color_modify: 'alpha', section.settings.caption_bg_color_opacity  }}"{% endif %}>
+				{% for block in section.blocks %}
+					
+					{% if block.settings.title.size > 0 %}
+						{% case block.settings.heading_settings %}
+						{% when 'small' %}
+						{%- assign title_class = 'h3' -%}
+						
+						{% when 'medium' %}
+						{%- assign title_class = 'h2' -%}
+						
+						{% when 'large' %}
+						{%- assign title_class = 'h1' -%}
+						
+						{% endcase %}
+						<div  class="{{ title_class }} mb-0" id="title_{{ section.id }}_{{ block.id }}">{{ block.settings.title }}</div>
+					{% endif %}
+					
+					{% if block.settings.subtitle.size > 0 %}
+						<h4>{{ block.settings.subtitle }}</h4>
+					{% endif %}
+
+					{% if block.settings.subsubtitle.size > 0 %}
+						<h6 class="subsubtitle" style="color:{{ block.settings.subtitle_color}}">{{ block.settings.subsubtitle }}</h6>
+					{% endif %}
+
+					{% if block.settings.text.size > 0 %}
+						<p class="mb-0{% if section.settings.section_view == 'boxed' %} subtext {% else %}text{% endif %}">{{ block.settings.text }}</p>
+					{% endif %}
+
+					{% if block.settings.button_label.size > 0 and block.settings.button_link.size > 0 %}
+						<a href="{{ block.settings.button_link }}" class="{% if block.settings.use_button %}btn {{ block.settings.btn_style }} {{ block.settings.btn_size }}{% else %}link link-primary {% endif %}">{{ block.settings.button_label }}</a>
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div>
+
+{% if section.settings.section_view == 'boxed' %}
+	</div>
+{% endif %}
+
+{% schema %}
+{
+	"name": "Image with text overlay",
+	"class": "section section_homepage section_image-with-text-overlay",
+	"max_blocks": 6,
+	"settings": [
+		{
+			"type": "select",
+			"id": "section_height",
+			"label": "Section height",
+			"default": "medium",
+			"options": [
+				{
+					"label": "Small",
+					"value": "small"
+				},
+				{
+					"label": "Medium",
+					"value": "medium"
+				},
+				{
+					"label": "Large",
+					"value": "large"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "section_view",
+			"label": "Section view",
+			"default": "boxed",
+			"options": [
+				{
+					"label": "Boxed",
+					"value": "boxed"
+				},
+				{
+					"label": "Full width",
+					"value": "full_width"
+				}
+			]
+		},
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image",
+			"info": "The image should be more than 2048px wide to resize and crop properly"
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"info": "It only works if the parallax is disabled",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+		{
+			"type": "header",
+			"content": "Parallax Settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "parallax",
+			"label": "Parallax",
+			"default": false
+		},
+
+		{
+			"type": "header",
+			"content": "Caption Settings"
+		},
+		{
+			"type": "select",
+			"id": "caption_align",
+			"label": "Caption align",
+			"default": "center",
+			"options": [
+				{
+					"label": "Center",
+					"value": "center"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				},
+				{
+					"label": "Left",
+					"value": "left"
+				}
+			]
+		},
+
+		{
+			"type": "select",
+			"id": "text_align",
+			"label": "Text align",
+			"default": "center",
+				"options": [
+					{
+						"label": "Center",
+						"value": "center"
+					},
+					{
+						"label": "Right",
+						"value": "right"
+					},
+					{
+						"label": "Left",
+						"value": "left"
+					}
+				]
+		},
+		{
+			"type": "checkbox",
+			"id": "inverted",
+			"label": "Inverted",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "caption_bg_color",
+			"label": "Caption background"
+		},
+		{
+	        "type":      "range",
+	        "id":        "caption_bg_color_opacity",
+	        "min":       0,
+	        "max":        1,
+	        "step":       0.1,
+	        "unit":       "px",
+	        "label":     "Background opacity",
+	        "default":   0.5
+		},
+		{
+			"type": "text",
+			"id": "custom_class",
+			"label": "Custom class (by default exist 'custom_caption' for indent heading)"
+		}
+	],
+	"blocks": [
+
+		// HEADER H2 //////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header_h2",
+			"name": "Header",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Heading",
+					"default": "Heading"
+				},
+
+				{
+					"type":      "select",
+					"id":        "heading_settings",
+					"label":     "Heading size",
+					"default":   "medium",
+					"options": [
+						{
+							"value": "small",
+							"label": "Small heading"
+						},
+						{
+							"value": "medium",
+							"label": "Medium heading"
+						},
+						{
+							"value": "large",
+							"label": "Large heading"
+						}
+					]
+				}
+			]
+		},
+
+		// HEADER H4 //////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header_h4",
+			"name": "Header h4",
+			"settings": [
+				{
+					"type": "text",
+					"id": "subtitle",
+					"label": "Sub heading",
+					"default": "with text overlay"
+				}
+			]
+		},
+
+		// HEADER H5 //////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "header_h5",
+			"name": "Sub heading",
+			"settings": [
+				{
+					"type": "text",
+					"id": "subsubtitle",
+					"label": "Sub heading"
+				},
+				{
+					"type": "color",
+					"id": "subtitle_color",
+					"label": "Color Title",
+					"default": "#121212"
+				}
+								
+			]
+		},
+
+		// TEXT  //////////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "text",
+			"name": "Text",
+			"settings": [
+				{
+					"type": "textarea",
+					"id": "text",
+					"label": "Text",
+					"default": "Use overlay text to give your customers insight into your brand. Select imagery and text that relates to your style and story."
+				}
+			]
+		},
+
+		// BUTTON  //////////////////////////////////////////////////////////////////////////////////////////////
+		{
+			"type": "button",
+			"name": "Button",
+			"settings": [
+				{
+					"type": "text",
+					"id": "button_label",
+					"label": "Button label"
+				},
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "use_button",
+					"label": "Use type button",
+					"default": true
+				},
+
+				{
+					"type": "radio",
+					"id": "btn_style",
+					"label": "Button style",
+					"default": "btn-primary",
+					"options": [
+						{
+							"value": "btn-default",
+							"label": "Default"
+						},
+						{
+							"value": "btn-primary",
+							"label": "Primary"
+						},
+						{
+							"value": "btn-secondary",
+							"label": "Secondary"
+						},
+						{
+							"value": "btn-alternate",
+							"label": "Alternate"
+						}
+					]
+				},
+				{
+					"type": "radio",
+					"id": "btn_size",
+					"label": "Button size",
+					"default": "btn-lg",
+					"options": [
+						{
+							"value": "btn-sm",
+							"label": "Small"
+						},
+						{
+							"value": "btn-md",
+							"label": "Medium"
+						},
+						{
+							"value": "btn-lg",
+							"label": "Large"
+						}
+					]
+				}
+			]
+		}
+	],
+	"presets": [
+		{
+			"name": "Image with text overlay",
+			"category": "Image"
+		}
+	]
+}
+{% endschema %}
+
+{% javascript %}
+jQuery(function($){
+	zmzParallax = function() {
+		$('.parallax_block').each(function() {
+			var parallaxBlock = $(this);
+			var parallaxLayer = $(this).find('.parallax_layer');
+
+			$(window).on('load scroll', function() {
+				var parallaxHeight = parseInt( parallaxBlock.outerHeight() );
+				var parallaxImgHeight = parseInt( parallaxLayer.outerHeight() );
+
+				var parallaxOffset1 = parseInt( parallaxBlock.offset().top );
+				var parallaxOffset2 = parseInt( parallaxOffset1 + parallaxHeight );
+
+				var translateMax = parseInt( parallaxImgHeight - parallaxHeight ) - 2; // minus 2 to prevent floated numbers and borders between sections
+
+				var scrollTemp = $(window).scrollTop() + window.innerHeight;
+
+				if ( ( scrollTemp >= parallaxOffset1 ) && ( $(window).scrollTop() <= parallaxOffset2 ) ) {
+					// var translateZMZ = parallaxHeight/parallaxImgHeight;
+
+					// if ( translateZMZ > 0.2 ) {
+					// 	var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.2 );
+					// }
+					// else {
+					// 	var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * translateZMZ );
+					// };
+
+					var translateVal = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.3 );
+					var translateVal_2 = parseInt( ( scrollTemp - parallaxOffset1 ) * 0.1 );
+
+					if ( translateVal <= translateMax ) {
+						parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateVal + 'px, 0)' });
+					}
+					else if ( translateVal > translateMax ) {
+						parallaxLayer.css({ 'transform' : 'translate3d(0, -' + translateMax + 'px, 0)' });
+					};
+				};
+			});
+		});
+	};
+
+	zmzParallax();
+
+	$(document).on('shopify:section:load shopify:section:unload', '.section_image-with-text-overlay', function() {
+		zmzParallax();
+	});
+});
+
+{% endjavascript %}

@@ -1,0 +1,486 @@
+{%- assign item = section.settings -%}
+{% assign paginate_by = item.items_per_page %}
+{%- assign product_img_alignment = item.product_img_alignment -%}
+
+{%- assign col_img_size = '270x360' -%}
+{%- assign col_img_min_size = '150x244' -%}
+{%- assign product_img_size = '420x530' -%}
+{%- assign product_img_size_min = '157x199' -%}
+{%- assign sidebar_collection_enable = false -%}
+
+{% if item.sidebar_collection_toggle %}
+	{%- assign item_class = 'col-6 col-sm-6 col-md-4 col-lg-4' -%}
+	{%- assign sidebar_collection_enable = true -%}
+{% else %}
+	{%- assign item_class = 'col-6 col-sm-6 col-md-4 col-lg-4 col-xl-3' -%}
+{% endif %}
+
+{%- assign col_img = '' -%}
+{%- assign cap_inverted_style = false -%}
+
+{%- assign tags_option = item.tags_option -%}
+
+{% for block in section.blocks %}
+	{% if block.settings.products_collection == collection.handle %}
+		{%- assign col_img = block.settings.image -%}
+
+		{% if block.settings.caption_inverted %}
+			{%- assign cap_inverted_style = true -%}
+		{% endif %}
+		{% if block.settings.caption_bg_color %}
+			{%- assign bg_collection_toggle = true -%}
+		{% endif %}
+		{% if block.settings.background_collection %}
+			{%- assign bg_collection = true -%}
+			{%- assign bg_color_collection = block.settings.background_collection -%}
+		{% endif %}
+		{% if block.settings.custom_collection_class %}
+			{%- assign custom_class = true -%}
+			{%- assign custom_text_class = block.settings.custom_collection_class -%}
+		{% endif %}
+	{% endif %}
+	{% if block.settings.bg_image.size > 0 %}
+		{%- assign bg_img_collection = true -%}
+		{%- assign bg_img = block.settings.bg_image -%}
+	{% endif %}
+{% endfor %}
+
+{% if col_img.size > 0 %}
+{% elsif collection.image %}
+	{%- assign col_img = collection.image -%}
+{% else %}
+	{%- assign col_img = collection.products.first.featured_image -%}
+{% endif %}
+
+{%- include 'collection-info-with-tags' -%}
+
+<div class="container">
+
+{% if sidebar_collection_enable %}
+	<div class="sidebar-enable row{% if item.sidebar_collection_position == 'sidebar_right' %} justify-content-md-end{% endif %}">
+{% endif %}
+		
+<div class="{% if sidebar_collection_enable %} sidebar_on col-12 col-md-9{% else %} page-no-sidebar{% endif %}{% if sidebar_collection_enable and item.sidebar_collection_position == 'sidebar_left' %} left-sidebar{% elsif sidebar_collection_enable and item.sidebar_collection_position == 'sidebar_right' %} right-sidebar{% endif %}">
+	{%- include 'collection' -%}
+</div>
+	
+{% if sidebar_collection_enable %}
+		<div class="sidebar_small col-12 col-md-3">
+			{%- include 'sidebar-col' -%}
+		</div>
+	</div>
+{% endif %}
+	
+</div>
+
+
+{%- include 'collection-script' -%}
+		
+{% schema %}
+{
+	"name": "Collection page",
+	"class": "section_template section_template__collection section_template__collection_fullwidth",
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "sidebar_collection_toggle",
+			"label": "Sidebar collection",
+			"default": false
+		},
+		{
+			"type": "radio",
+			"id": "sidebar_collection_position",
+			"label": "Sidebar collection position",
+			"options": [
+				{
+					"value": "sidebar_left",
+					"label": "Left position"
+				},
+				{
+					"value": "sidebar_right",
+					"label": "Right position"
+				}
+			]
+		},
+
+		{
+		"type": "select",
+		"id": "items_per_page",
+		"label": "Items per page",
+		"info": "Attention! If you select item 'All', this may decrease performance. it will work correctly only in case of a small number of products!",
+		"default": "9",
+			"options": [
+				{
+					"value": "6",
+					"label": "6"
+				},
+				{
+					"value": "9",
+					"label": "9"
+				},
+				{
+					"value": "10",
+					"label": "10"
+				},
+				{
+					"value": "12",
+					"label": "12"
+				},
+				{
+					"value": "15",
+					"label": "15"
+				},
+				{
+					"value": "all",
+					"label": "All"
+				}
+			]
+		},
+		
+
+		// COLLECTION SETTINGS
+		{
+			"type": "header",
+			"content": "Collection settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "collection_desc_toggle",
+			"label": "Collection description",
+			"default": true
+		},
+		{
+			"type": "checkbox",
+			"id": "collection_tags_toggle",
+			"label": "Show tags",
+			"default": false
+		},
+		{
+			"type": "checkbox",
+			"id": "collection_image_toggle",
+			"label": "Show image",
+			"default": false
+		},
+		{
+			"type": "select",
+			"id": "tags_option",
+			"label": "Tags option",
+			"options": [
+				{
+					"value": "tag_test",
+					"label": "Text tag"
+				},
+				{
+					"value": "tag_img",
+					"label": "Image tag"
+				}
+			]
+		},
+		// PRODUCT LISTING
+		{
+			"type": "header",
+			"content": "Product listing"
+		},
+		{
+			"type": "select",
+			"id": "product_img_alignment",
+			"label": "Product image alignment",
+			"default": "center",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+
+		// COLLECTION IMAGE
+		{
+			"type": "header",
+			"content": "Collection image"
+		},
+		{
+			"type": "select",
+			"id": "collection_img_alignment",
+			"label": "Collection image alignment",
+			"default": "center",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		}
+	],
+	"blocks": [
+		{
+			"type": "collection_image",
+			"name": "Collection custom image",
+			"settings": [
+				{
+					"type": "collection",
+					"id": "products_collection",
+					"label": "Collection"
+				},
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Collection Image"
+				},
+				{
+					"type": "image_picker",
+					"id": "bg_image",
+					"label": "Background Image",
+					"info": "The image should be more than 1200px and collection 'Show image' should be disable"
+				},
+				{
+					"type": "checkbox",
+					"id": "caption_bg_color",
+					"label": "Caption background",
+					"default": false
+				},
+				{
+					"type": "color",
+					"id": "background_collection",
+					"label": "Collection caption background",
+					"default": "transparent"
+				},
+				{
+					"type": "checkbox",
+					"id": "caption_inverted",
+					"label": "Inverted Caption Style",
+					"default": false
+				},
+				{
+					"type": "text",
+					"id": "custom_collection_class",
+					"label": "Custom collection class"
+				}
+			]
+		},
+		{
+			"type": "tag_image",
+			"name": "Tag image",
+			"settings": [
+				{
+					"type": "text",
+					"id": "tag_text",
+					"label": "Tag name"
+				},
+				{
+					"type": "image_picker",
+					"id": "tag_img",
+					"label": "Insert image for tag",
+					"info": "Image size '180x180'"
+				}
+			]
+		},
+
+
+		// Sidebar COLLECTIONS
+		{
+			"type": "widget_collections",
+			"name": "Sidebar Collections",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Collections"
+				},
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Widget open"
+				}
+			]
+		},
+
+		// Sidebar PRODUCTS ///////////////////////////////////////////////////////////////////////////////////////
+		{
+		"type": "widget_products",
+		"name": "Sidebar Products",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Products"
+				},
+				{
+					"type": "collection",
+					"id": "products_collections",
+					"label": "Collection"
+				}
+			]
+		},
+
+		// Sidebar SEARCH
+		{
+		"type": "widget_search",
+		"name": "Sidebar Search",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Sidebar Search"
+				}
+			]
+		},
+		
+		// Sidebar PRODUCT TYPES
+		{
+			"type": "widget_types",
+			"name": "Sidebar Product types",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Product types"
+				},
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Widget open"
+				}
+			]
+		},
+
+		// Sidebar PRODUCT VENDORS
+		{
+			"type": "widget_vendors",
+			"name": "Sidebar Product vendors",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Product vendors"
+				},
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Widget open"
+				}
+			]
+		},
+
+
+
+		// Sidebar LINKLIST
+		{
+			"type": "widget_linklist",
+			"name": "Sidebar Linklist",
+			"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Linklist"
+				},
+				{
+					"type": "link_list",
+					"id": "links",
+					"label": "Choose linklist"
+				},
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Widget open"
+				}
+			]
+		},
+
+		// Sidebar PRODUCT PRICE FILTER
+		{
+		"type": "widget_price_sort",
+		"name": "Sidebar price sort",
+		
+		"settings": [
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Widget title",
+					"default": "Product price sort"
+				},
+
+				{
+					"type": "checkbox",
+					"id": "widget_open_toggle",
+					"label": "Widget open"
+				}
+			]
+		},
+		// Sidebar BANNER
+		{
+			"type": "widget_banner",
+			"name": "Sidebar Banner",
+			"settings": [
+				{
+					"type": "image_picker",
+					"id": "image",
+					"label": "Image",
+					"info": "The image should be more than 270px wide to resize and crop properly"
+				},
+				{
+					"type": "select",
+					"id": "banner_height",
+					"label": "Banner height",
+					"default": "medium",
+					"options": [
+						{
+							"label": "Small (270x151)",
+							"value": "small"
+						},
+						{
+							"label": "Medium (270x270)",
+							"value": "medium"
+						},
+						{
+							"label": "Large (270x380)",
+							"value": "large"
+						}
+					]
+				},
+				{
+					"type": "text",
+					"id": "title",
+					"label": "Heading",
+					"default": "Title"
+				},
+				{
+					"type": "text",
+					"id": "text",
+					"label": "Text",
+					"default": "Banner text"
+				},
+				{
+					"type": "url",
+					"id": "link",
+					"label": "Link"
+				}
+			]
+		}
+	
+	]
+}
+{% endschema %}

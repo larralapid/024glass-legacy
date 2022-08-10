@@ -1,0 +1,431 @@
+{% case section.settings.img_size %}
+	{% when 'small'  %}{%- assign img_size = '570x500' -%}{%- assign img_min_size = '215x200' -%}
+	{% when 'medium' %}{%- assign img_size = '570x700' -%}{%- assign img_min_size = '200x300' -%}
+	{% when 'large'  %}{%- assign img_size = '960x700' -%}{%- assign img_min_size = '320x200' -%}
+{% endcase %}
+
+{% if section.settings.image_2.size > 0 %}
+	{%- assign img_2_size = '294x375' -%}
+{% endif %}
+
+
+{% case section.settings.column_settings %}
+	{% when 'column_8_4' %}
+		{%- assign item_img_class = 'col-12 col-md-8 col-sm-6' -%}
+		{%- assign item_text_class = 'col-12 col-md-4 col-sm-6' -%}
+	{% when 'column_6_6' %}
+		{%- assign item_img_class = 'col-12 col-md-6' -%}
+		{%- assign item_text_class = 'col-12 col-md-6' -%}
+	{% when 'column_7_5' %}
+		{%- assign item_img_class = 'col-12 col-lg-7 col-md-6' -%}
+		{%- assign item_text_class = 'col-12 col-lg-5 col-md-6' -%}
+{% endcase %}
+
+
+{% if section.settings.background_toggle %}
+	<div style="background-color: {{ section.settings.bg_color }}" class="bg-section">
+{% endif %}
+
+{% if section.settings.container_view %}
+	<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'container-xl' %}container-xxl{% endif %}">
+{% endif %}
+		
+<style>
+	
+	{% case section.settings.img_size %}
+	
+	{% when 'small'  %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(500 / 1170 * 100%);
+	}
+	
+	{% when 'medium' %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(700 / 1170 * 100%);
+	}
+	
+	{% when 'large'  %}
+	.section_image-with-text .img_placeholder__{{ section.settings.img_size }} {
+		padding: calc(700 / 1170 * 100%);
+	}
+	
+	{% endcase %}
+	
+	
+	
+</style>
+	<div class="row{% if section.settings.centred %} align-items-center align-item-txt-center{% endif %}{% if section.settings.layout == 'right' %} image_right{% endif %}">
+		<div class="item_img {{ item_img_class }}" >
+			<div {% unless section.settings.column_settings == 'column_8_4' %}{% if section.settings.layout == 'right' %} class="offset-xl-2"{% endif %} {% endunless %}>
+			{% if section.settings.image.size > 0 %}
+				<img class="blur-up img-fluid lazyload"
+				src="{{ section.settings.image | img_url: img_min_size, crop: section.settings.img_alignment }}"
+				alt="{{ section.settings.image.alt }}"
+				data-src="{{ section.settings.image | img_url: img_size, crop: section.settings.img_alignment }}"/>
+			{% else %}
+				<div class="img_placeholder__wrap img_placeholder__{{ section.settings.img_size }}">
+					{{ 'image' | placeholder_svg_tag: 'img_placeholder' }}
+				</div>
+			{% endif %}
+			{% if section.settings.image_2.size > 0 %}
+				<div class="sub_img d-md-block d-none">
+						<img class="blur-up lazyload img-fluid"
+							 src="{{ section.settings.image_2 | img_url: img_2_size, crop: 'center' }}"
+							 alt="{{ section.settings.image_2.alt }}" />
+				</div>
+			{% endif %}
+			</div>
+		</div>
+
+	<div class="item_txt {{ item_text_class }} {% if section.settings.text_center %} text-center{% endif %}">
+		<div class="txt-wrapper {% unless section.settings.column_settings == 'column_8_4' %} {% if section.settings.layout == 'left' %} offset-xl-2{% endif %}{% endunless %}">
+			{% for block in section.blocks %}
+				
+					{% case block.type %}
+						{% when 'heading' %}
+					
+							{% case block.settings.heading_settings %}
+					
+								{% when 'small' %}
+								{%- assign title_class = 'h3' -%}
+						
+								{% when 'medium' %}
+								{%- assign title_class = 'h2' -%}
+						
+								{% when 'large' %}
+								{%- assign title_class = 'h1' -%}
+			
+							{% endcase %}
+				
+							<div class="{{ title_class }} heading">{{ block.settings.text }}</div>
+					{% when 'heading_h3' %}
+							<div class="h3">{{ block.settings.text }}</div>
+					{% when 'subheading' %}
+							<p class="h6">{{ block.settings.text }}</p>
+					{% when 'text' %}
+							<p class="description">{{ block.settings.text }}</p>
+					{% when 'html' %}
+						<div class="text_html">{{ block.settings.code }}</div>
+					{% when 'list' %}
+							<div class="list">{{ block.settings.text }}</div>
+					{% when 'button' %}
+						{% if block.settings.button_link.size > 0 and block.settings.button_text.size > 0 %}
+							<a class="btn btn-md {% if block.settings.btn_type == 'primary' %} btn-primary{%  elsif block.settings.btn_type == 'secondary' %} btn-secondary{% endif %}" href="{{ block.settings.button_link }}">{{ block.settings.button_text }}</a>
+						{% endif %}
+				{% endcase %}
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% if section.settings.container_view %}
+	</div>
+{% endif %}
+
+{% if section.settings.background_toggle %}
+	</div>
+{% endif %}
+
+
+{% schema %}
+{
+	"name": "Image with text",
+	"class": "section section_homepage section_image-with-text",
+	"max_blocks": 10,
+	"settings": [
+		{
+			"type": "checkbox",
+			"id": "background_toggle",
+			"label": "Show background color",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "bg_color",
+			"label": "Background color",
+			"default": "#F6F7F9"
+		},
+		{
+			"type": "checkbox",
+			"id": "container_view",
+			"label": "Use container",
+			"default":   false
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+			{
+				"value": "container",
+				"label": "Container"
+			},
+			{
+				"value": "container-xl",
+				"label": "Container xl"
+			}
+		],
+			"default":   "container",
+			"info":      "If use container"
+		},
+
+		{
+			"type":      "select",
+			"id":        "column_settings",
+			"label":     "Column width",
+				"options": [
+					{
+						"value": "column_8_4",
+						"label": "Image 8 / text 4"
+					},
+					{
+						"value": "column_6_6",
+						"label": "Image 6 / text 6"
+					},
+					{
+						"value": "column_7_5",
+						"label": "Image 7 / text 5"
+					}
+				],
+			"default":   "column_6_6"
+		},
+
+		{
+			"type": "image_picker",
+			"id": "image",
+			"label": "Image"
+		},
+		{
+			"type": "select",
+			"id": "layout",
+			"label": "Layout",
+			"default": "left",
+			"options": [
+				{
+					"value": "left",
+					"label": "Image on left"
+				},
+				{
+					"value": "right",
+					"label": "Image on right"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_size",
+			"label": "Image size",
+			"options": [
+				{
+					"value": "small",
+					"label": "Small (570x500)"
+				},
+				{
+					"value": "medium",
+					"label": "Medium (570x700)"
+				},
+				{
+					"value": "large",
+					"label": "Large (980x700)"
+				}
+			]
+		},
+		{
+			"type": "select",
+			"id": "img_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+
+		{
+			"type": "image_picker",
+			"id": "image_2",
+			"label": "Image 2"
+		},
+		{
+			"type": "checkbox",
+			"id": "centred",
+			"label": "Vertical center alignment",
+			"default": false
+		},
+
+		{
+			"type": "checkbox",
+			"id": "text_center",
+			"label": "Horizontal center alignment",
+			"default": false
+		}
+	],
+	"blocks": [
+
+		// HEADING H2
+		{
+			"type": "heading",
+			"name": "Heading (h2)",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Heading"
+				},
+
+				{
+					"type":      "select",
+					"id":        "heading_settings",
+					"label":     "Heading size",
+					"options": [
+						{
+							"value": "small",
+							"label": "Small heading"
+						},
+						{
+							"value": "medium",
+							"label": "Medium heading"
+						},
+						{
+							"value": "large",
+							"label": "Large heading"
+						}
+					],
+					"default":   "medium"
+				}
+			]
+		},
+
+		// HEADING H3
+		{
+			"type": "heading_h3",
+			"name": "Heading (h3)",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Heading"
+				}
+			]
+		},
+
+		// SUBHEADING
+		{
+			"type": "subheading",
+			"name": "Subheading",
+			"settings": [
+				{
+					"type": "text",
+					"id": "text",
+					"label": "Subheading"
+				}
+			]
+		},
+
+		// TEXT
+		{
+			"type": "text",
+			"name": "Text",
+			"settings": [
+				{
+					"type": "textarea",
+					"id": "text",
+					"label": "Text"
+				}
+			]
+		},
+
+		// CUSTOM HTML ==========================================================================================
+		{
+			"type": "html",
+			"name": "HTML code",
+			"settings": [
+				{
+					"type": "textarea",
+					"id": "code",
+					"label": "Custom HTML",
+					"default": "<div><p>You HTML content</p></div>"
+				}
+			]
+		},
+
+		// LIST
+		{
+			"type": "list",
+			"name": "List",
+			"settings": [
+				{
+					"type": "richtext",
+					"id": "text",
+					"label": "Text"
+				}
+			]
+		},
+
+		// BUTTON
+		{
+			"type": "button",
+			"name": "Button",
+			"settings": [
+				{
+					"type": "url",
+					"id": "button_link",
+					"label": "Button link"
+				},
+				{
+					"type": "text",
+					"id": "button_text",
+					"label": "Button text"
+				},
+				{
+					"type": "select",
+					"id": "btn_type",
+					"label": "Button type",
+					"default": "primary",
+					"options": [
+						{
+							"value": "primary",
+							"label": "Primary"
+						},
+						{
+							"value": "secondary",
+							"label": "Secondary"
+						}
+					]
+				}
+			]
+		}
+	],
+
+	"presets": [
+		{
+			"name": " Image with text",
+			"category": "Image",
+			"blocks": [
+				{
+					"type": "heading"
+				},
+				{
+					"type": "subheading"
+				},
+				{
+					"type": "text"
+				}
+			]
+		}
+	]
+}
+{% endschema %}
+
+
+
+

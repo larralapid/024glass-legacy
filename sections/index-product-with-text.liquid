@@ -1,0 +1,173 @@
+{%- assign product = all_products[section.settings.single_product] -%}
+
+{% if product.empty? %}
+	{%- assign single_product_exist = false -%}
+{% else %}
+	{%- assign single_product_exist = true -%}
+{% endif %}
+
+{% if single_product_exist %}
+
+	{% assign product_image = true %}
+	{% if product.images.size == 0 %}
+		{% assign product_image = false %}
+	{% endif %}
+
+	{%- assign productJSON = product | json -%}
+
+	<div{% if section.settings.background_toggle %} style="background-color: {{ section.settings.bg_color }}"{% endif %} class="section section_homepage section_product-with-text{% if section.settings.background_toggle %} bg-section{% endif %}" id="index_product_with_text__{{ section.id }}" data-section="{{ section.id }}" data-images="{{ product_image }}">
+		{% if section.settings.container_view %}
+			<div class="{% if section.settings.container_settings == 'container' %}container{% elsif section.settings.container_settings == 'container-xl' %} container container-xxl{% endif %}">
+		{% endif %}
+			<div class="row">
+				<div class="col-12 col-md-6 order-2 order-md-1 mt-4 mt-md-0">
+					<h6 class="section_subheading">{{ product.vendor }}</h6>
+					<h2 class="section_heading"><a href="{{ product.url }}">{{ product.title | truncate: 45 }}</a></h2>
+					<p class="section-product-short-desc">
+						{{ product.description | strip_html | truncate: 200 }}
+					</p>
+					{% if section.settings.product_short_info.size > 0 %}
+						<div class="section-product-short-info">
+							{{ section.settings.product_short_info }}
+						</div>
+					{% endif %}
+					{% if section.settings.btn_text.size > 0 %}
+						<a href="{{ product.url }}" class="btn btn-primary btn-lg">
+							{{ section.settings.btn_text }}
+						</a>
+					{% endif %}
+				</div>
+				<div class="col-12 col-md-6 order-1 order-md-2">
+					<div class="section-product-image-wrapper">
+						{% case product.images.size %}
+						{% when 0 %}
+							<img class="img-fluid" src="{{ 'no_image.png' | asset_url }}" alt="">
+						{% when 1 %}
+							<img class="img-fluid w-100" src="{{ product.featured_image.src | product_img_url: '600x600', crop: section.settings.image_alignment }}" alt="">
+							{% else %}
+							<img class="img-fluid" src="{{ product.images.first | product_img_url: '600x600', crop: section.settings.image_alignment }}" alt="{{ product.images.first.alt }}">
+						{% endcase %}
+					</div>
+				</div>
+			</div>
+	{% if section.settings.container_view %}
+		</div>
+	{% endif %}
+	</div>
+
+{% endif %}
+
+{% schema %}
+{
+	"name": "Product with text",
+	"class": "index-section section_template__product",
+	"settings": [
+		// SECTION SETTINGS
+		{
+			"type": "header",
+			"content": "Section settings"
+		},
+		{
+			"type": "checkbox",
+			"id": "background_toggle",
+			"label": "Show background color",
+			"default": false
+		},
+		{
+			"type": "color",
+			"id": "bg_color",
+			"label": "Background color",
+			"default": "#F6F7F9"
+		},
+		{
+			"type": "checkbox",
+			"id": "container_view",
+			"label": "Use container",
+			"default": true
+		},
+		{
+			"type":      "select",
+			"id":        "container_settings",
+			"label":     "Container width",
+			"options": [
+				{
+					"value": "container",
+					"label": "Container"
+				},
+				{
+					"value": "container-xl",
+					"label": "Container xl"
+				}
+			],
+			"default":   "container",
+			"info":      "If use container"
+		},
+		// PRODUCT
+		{
+			"type": "header",
+			"content": "Product"
+		},
+		{
+			"type": "product",
+			"id": "single_product",
+			"label": "Choose product"
+		},
+
+		// VIEW
+		{
+			"type": "header",
+			"content": "Product settings"
+		},
+		// IMAGES
+		{
+			"type": "header",
+			"content": "Images"
+		},
+		{
+			"type": "select",
+			"id": "image_alignment",
+			"label": "Image alignment",
+			"options": [
+				{
+					"value": "top",
+					"label": "Top"
+				},
+				{
+					"value": "center",
+					"label": "Middle"
+				},
+				{
+					"value": "bottom",
+					"label": "Bottom"
+				}
+			]
+		},
+		// SETTINGS
+		{
+			"type": "html",
+			"id": "product_short_info",
+			"label": "Html content"
+		},
+		{
+			"type": "text",
+			"id": "btn_text",
+			"label": "Button text",
+			"default": "Shop Contacts"
+		}
+	],
+	"presets": [
+		{
+			"name": "Product with text",
+			"category": "Products"
+		}
+	]
+}
+{% endschema %}
+
+<script>
+	var producText = {
+		available: {{ 'layout.product.available' | t | json }},
+		unavailable: {{ 'layout.product.unavailable' | t | json }},
+		items: {{ 'layout.product.items' | t | json }},
+	};
+</script>

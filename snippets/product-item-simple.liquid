@@ -1,0 +1,71 @@
+{% comment %}Is this product on sale?{% endcomment %}
+{%- assign on_sale = false -%}
+{%- if product.compare_at_price > product.price -%}
+	{%- assign on_sale = true -%}
+{%- endif -%}
+{%- assign img_size = '270x340' -%}
+{%- assign img_alignment = 'center' -%}
+{% unless img_min_size.size > 0 %}
+	{%- assign img_min_size = '130x160' -%}
+{% endunless %}
+
+<div class="product_item product_item_simple" id="product__{{ product.handle }}">
+	<div class="product_img_wrap">
+		<a class="product_img" href="{{ product.url | within: collection }}">
+			{% if product.featured_image %}
+				<img class="img-fluid lazyload blur-up" src="{{ product.featured_image.src | img_url: img_min_size, crop: img_alignment }}" data-src="{{ product.featured_image.src | img_url: img_size, crop: img_alignment }}"  alt="{{ product.title | escape }}">
+			{% else %}
+				<img class="lazyload img-fluid" src="{{ 'no_image.png' | asset_img_url: img_min_size, crop: 'center' }}" data-src="{{ 'no_image.png' | asset_img_url: img_size, crop: 'center' }}" alt="{{ product.featured_image.alt | escape }}">
+			{% endif %}
+		</a>
+	</div>
+
+	<div class="product_info mt-1">
+		<h6 class="product_name">
+			{% if template == 'index' %}
+				<a href="{{ product.url }}">{{ product.title | truncate:35 }}</a>
+			{% else %}
+				<a href="{{ product.url | within: collection }}">{{ product.title | truncate:35 }}</a>
+			{% endif %}
+		</h6>
+		<div class="product-price-container">
+			{% if product.available and settings.variants_money_toggle %}
+				{% if product.variants.size == 1 %}
+					<span class="product-price">{{ product.price | money }}</span>
+					{% if on_sale %}
+						<span class="product-regular-price">{{ product.compare_at_price | money }}</span>
+					{% endif %}
+				{% else %}
+					{% assign prices_sorted = product.variants | sort: 'price' %}
+					
+					{% comment %}
+					<span class="product-price product-price-variant">{{ prices_sorted.first.price | money }}
+						{% unless prices_sorted.first.price == prices_sorted.last.price %}
+						– <span>
+							{{ prices_sorted.last.price | money }}
+						</span>
+						{% endunless %}
+					</span>
+					{% endcomment %}
+					<span class="product-price product-price-variant"><span class="grid-block"><span>{{ prices_sorted.first.price | money }}</span>{% unless prices_sorted.first.price == prices_sorted.last.price %}
+							– </span>
+						<span>
+							{{ prices_sorted.last.price | money }}
+						</span>
+						{% endunless %}
+					</span>
+				{% endif %}
+			{% else %}
+				<span class="product-price {% if on_sale %} product-sale-price {% endif %}">
+					{{ product.price | money }}
+				</span>
+				{% if on_sale %}
+					<span class="product-regular-price money">
+						{{ product.compare_at_price | money }}
+					</span>
+				{% endif %}
+			{% endif %}
+		</div>
+	</div>
+</div>
+									

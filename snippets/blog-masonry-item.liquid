@@ -1,0 +1,56 @@
+<div class="item">
+    <article class="article_item article_item_masonry">
+      <div class="article_image">
+        {% if article.image %}
+          <img class="blur-up lazyload img-fluid w-100" src="{{ article.image.src | img_url: '100x100', crop: section.settings.img_alignment }}" data-src="{{ article.image.src | img_url: '370x230', crop: section.settings.img_alignment }}" alt="{{ article.image.alt }}">
+        {% endif %}
+      </div>
+      <div class="article_caption {% if article.image == blank %} article_caption_no_image  {% endif %}">
+        
+        {%- if item.blog_show_info -%}
+          <div class="article_info">
+                {%- if item.blog_show_date -%}
+                  <span class="d-flex align-items-center">
+                    <time class="article_time" datetime="{{ article.published_at | date: '%Y-%m-%dT%H:%M' }}">
+                      {{ article.published_at | date: '%b %d, %Y' }}
+                    </time>
+                     <span class="divider">&#124;</span>
+                  </span>
+                 
+                {%- endif -%}
+                
+                {%- if article.tags.size > 0 and item.blog_show_tags -%}
+                  {%- for tag in article.tags limit:3 -%}
+                    <a class="d-flex align-items-center" href="{{ blog.url }}/tagged/{{ tag | handle }}">
+                      {{ tag }}
+                      <span class="divider">&#124;</span>
+                    </a>
+                  {%- endfor -%}
+                {%- endif -%}
+                
+                {%- if blog.comments_enabled? and item.show_comments -%}
+                  <span class="post-comments">
+			    	<span class="comments_count">{{ article.comments_count }} {{ 'blog.articles.comments' | t }}</span>
+                  </span>
+                {%- endif -%}
+                
+            {%- if item.blog_show_author -%}
+              <span class="d-flex align-items-center ml-auto">{{ 'blog.articles.by_author' | t }} <em>{{ article.author }}</em> </span>
+            {%- endif -%}
+            
+          </div>
+        {%- endif -%}
+        <h5 class="article_title">
+          <a href="{{ article.url }}">{{ article.title  | truncate: 50 }}</a>
+        </h5>
+        <div class="rte article_description  {% if article.image == blank %} d-block {% else %} d-none {% endif %}">
+          {% if article.excerpt.size > 0 %}
+            {{ article.excerpt }}
+          {% elsif article.content.size > 0 %}
+              {{ article.content | strip_html | truncatewords: 20 }}
+          {% endif %}
+        </div>
+        <a class="link link-primary" href="{{ article.url }}">{{ 'blog.articles.read_more' | t }}</a>
+      </div>
+    </article>
+</div>

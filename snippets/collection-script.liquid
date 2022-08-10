@@ -1,0 +1,103 @@
+<script>
+jQuery(document).ready(function($) {
+  
+    // PRODUCTS VIEW GRID/LIST
+    if ( typeof $.cookie('productSortView') == 'undefined' ) {
+      $.cookie('productSortView', 'grid', {path: '/'});
+    }
+    else if ( $.cookie('productSortView') == 'list' ) {
+      $('#view_grid, #view_grid_large, #view_grid_small').removeClass('active');
+      $('#view_list').addClass('active');
+      $('#product_listing__sorted').addClass('product_listing__list').removeClass('product_listing__grid');
+      $('#product_listing__sorted').addClass('product_listing__list').removeClass('product_listing__grid_large');
+      $('#product_listing__sorted').addClass('product_listing__list').removeClass('product_listing__grid_small');
+    } else if ( $.cookie('productSortView') == 'grid' ){
+      $('#view_list, #view_grid_large, #view_grid_small').removeClass('active');
+      $('#view_grid').addClass('active');
+      $('#product_listing__sorted').addClass('product_listing__grid').removeClass('product_listing__list');
+      $('#product_listing__sorted').addClass('product_listing__grid').removeClass('product_listing__grid_large');
+      $('#product_listing__sorted').addClass('product_listing__grid').removeClass('product_listing__grid_small');
+    } else if ( $.cookie('productSortView') == 'grid_large' ){
+      $('#view_list, #view_grid, #view_grid_small').removeClass('active');
+      $('#view_grid_large').addClass('active');
+      $('#product_listing__sorted').addClass('product_listing__grid_large').removeClass('product_listing__list');
+      $('#product_listing__sorted').addClass('product_listing__grid_large').removeClass('product_listing__grid');
+      $('#product_listing__sorted').addClass('product_listing__grid_large').removeClass('product_listing__grid_small');
+    } else if ( $.cookie('productSortView') == 'grid_small' ){
+      $('#view_list, #view_grid, #view_grid_large').removeClass('active');
+      $('#view_grid_small').addClass('active');
+      $('#product_listing__sorted').addClass('product_listing__grid_small').removeClass('product_listing__list');
+      $('#product_listing__sorted').addClass('product_listing__grid_small').removeClass('product_listing__grid');
+      $('#product_listing__sorted').addClass('product_listing__grid_small').removeClass('product_listing__grid_large');
+    }
+    
+    $('#view_grid, #view_grid_large, #view_grid_small, #view_list').on('click', function() {
+      var thisView = $(this).data('view');
+      
+      $('#view_grid, #view_grid_large, #view_grid_small, #view_list').removeClass('active');
+      $('#product_listing__sorted').removeClass('product_listing__list product_listing__grid product_listing__grid_large product_listing__grid_small');
+      
+      $(this).addClass('active');
+      
+      $.cookie('productSortView', thisView, {path: '/'});
+      $('#product_listing__sorted').addClass( 'product_listing__' + thisView );
+      
+    });
+    // PRODUCTS SORTING
+    $('#sort_by_select option').each(function() {
+      if ( document.location.href.indexOf( $(this).attr('value') ) != -1 ) {
+        $(this).attr('selected', 'selected');
+      }
+    });
+  
+    
+    $('#sort_by_select').on('change', function() {
+      var productSortQuery;
+      if ( document.location.pathname.indexOf('types') > 0 || document.location.pathname.indexOf('vendors') > 0 ) {
+        if ( document.location.search.indexOf('sort_by=') > 0 ) {
+          var locationSearch = document.location.search.replace(/&sort_by=(\w|\-)+/, '&sort_by=' + $(this).val());
+           productSortQuery = document.location.origin + document.location.pathname + locationSearch;
+        } else {
+          productSortQuery = document.location.origin + document.location.pathname + document.location.search + '&page=1&sort_by=' + $(this).val();
+        }
+      } else {
+        productSortQuery = document.location.origin + document.location.pathname  + '?page=1&sort_by=' + $(this).val();
+      }
+      document.location.href = productSortQuery;
+    });
+  
+  
+  
+  // Transfer collection title block
+    var collection_content = $('.template-collection .collection-transfer');
+    var collection_position = $('.template-collection .collection-wrapper');
+    if ((collection_content).length) {
+      (collection_content).appendTo(collection_position);
+    } else {
+      (collection_position).empty();
+    }
+  
+});
+
+(function($) {
+
+    
+
+    $(window).on('load', function() {
+      // LINKLIST ITEM SHOW/HIDE ELEMENT
+      $('.sidebar_widget__linklist .menu_trigger').each(function(i) {
+        var targetMenu = '#' + $(this).data('submenu');
+        
+        $(this).on('click', function(e){
+          if ($(this).hasClass('active')){
+            $(targetMenu).hide(300);
+            $(this).removeClass('active');
+          } else {
+            $(targetMenu).show(300);
+            $(this).addClass('active');
+          }
+        });
+      });
+    });
+})(jQuery);
+</script>

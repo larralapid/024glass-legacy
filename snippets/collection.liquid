@@ -1,0 +1,30 @@
+
+{% include 'collection-options' %}
+
+{% if item.items_per_page == 'all' %}
+  {% assign paginate_by = item.items_per_page %}
+  
+  <div class="row product_listing__main custom_pagination_list product_listing__grid sidebar-row" id="product_listing__sorted" data-paginate-by="{{ paginate_by }}">
+    
+    {% for product in collection.products %}
+      <div class="{{ item_class }} product_item_wrap">
+        {% include 'product-listing-item' img_size: product_img_size, img_min_size: product_img_size_min, img_alignment: product_img_alignment %}
+      </div>
+    {% endfor %}
+  
+  </div>
+
+{% else %}
+  
+  {% paginate collection.products by paginate_by %}
+  <div class="row product_listing__main" id="product_listing__sorted">
+    {% for product in collection.products %}
+      <div class="{{ item_class }} product_item_wrap">
+        {% include 'product-listing-item' img_size: product_img_size, img_min_size: product_img_size_min, img_alignment: product_img_alignment %}
+      </div>
+    {% endfor %}
+  </div>
+  {% assign pagination_items = 'layout.pagination.products' | t %}
+  {% include 'snippet-pagination' with pagination_items %}
+  {% endpaginate %}
+{% endif %}
